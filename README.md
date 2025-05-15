@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/wundergraph/cosmo-plugin-demo">
-    <img src="logo.png" width="800px" alt="gRPC Plugin Demo" />
+    <img src="logo.png" width="600px" alt="gRPC Plugin Demo" />
   </a>
 </p>
 
