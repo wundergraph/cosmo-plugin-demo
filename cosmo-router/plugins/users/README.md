@@ -74,6 +74,7 @@ users/
 │   └── service.proto
 ├── src/                # Source code
 │   ├── main.go         # Plugin implementation
+│   ├── main_test.go    # Integration tests
 │   └── schema.graphql  # GraphQL schema definition
 └── go.mod              # Go module dependencies
 ```
