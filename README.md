@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h3 align="center">Seamlessly design your API schema with GraphQL Federation and implement your services with gRPC</h3>
+<p align="center">Seamlessly design your API schema with GraphQL Federation and implement your services with gRPC</p>
 
 <p align="center">
   <a href="#features">Features</a> •
