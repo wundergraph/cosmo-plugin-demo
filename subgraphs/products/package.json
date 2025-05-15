@@ -1,0 +1,13 @@
+{
+  "name": "products-subgraph",
+  "version": "1.0.0",
+  "description": "Products Subgraph for Apollo Federation Demo",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@apollo/subgraph": "^2.5.6"
+  }
+} 

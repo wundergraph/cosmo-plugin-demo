@@ -1,0 +1,11 @@
+version: "1"
+
+listen_addr: localhost:3010
+
+execution_config:
+  file:
+    path: ../../cosmo-plugin-demo/cosmo-router/config.json
+
+plugins:
+  enabled: true
+  path: "../../cosmo-plugin-demo/cosmo-router/plugins"

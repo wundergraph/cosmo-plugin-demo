@@ -1,0 +1,35 @@
+{
+  "name": "cosmo-plugin-demo",
+  "version": "1.0.0",
+  "description": "Cosmo Federation Demo with a gRPC subgraph",
+  "main": "index.js",
+  "workspaces": [
+    "subgraphs/*",
+    "cosmo-router"
+  ],
+  "scripts": {
+    "start:products": "npm run start -w products-subgraph",
+    "start:router": "npm run start -w cosmo-router",
+    "build": "npm run build -w cosmo-router && npm run test -w cosmo-router",
+    "start": "npm run build && concurrently \"npm run start:products\" \"npm run start:router\"",
+    "dev": "npm start",
+    "install:all": "npm install",
+    "upgrade:deps": "npm upgrade --ws",
+    "list:workspaces": "npm query .workspace"
+  },
+  "keywords": [
+    "graphql",
+    "apollo",
+    "federation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@apollo/server": "^4.9.5",
+    "graphql": "^16.8.1",
+    "graphql-tag": "^2.12.6"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

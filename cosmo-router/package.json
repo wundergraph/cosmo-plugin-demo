@@ -1,0 +1,14 @@
+{
+  "name": "cosmo-router",
+  "version": "1.0.0",
+  "description": "Cosmo Router",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "compose": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router compose -i graph.yaml -o config.json",
+    "build": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts plugin build plugins/users --debug && npm run compose",
+    "test": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts plugin test plugins/users",
+    "generate": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts plugin build plugins/users --generate-only",
+    "start": "cd ../../cosmo/router && go run cmd/router/main.go -config ../../federation-x-demo/cosmo-router/config.yaml"
+  }
+} 
