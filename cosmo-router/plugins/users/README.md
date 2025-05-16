@@ -23,7 +23,7 @@ To run the integration tests:
 
 ```shell
 cd cosmo-router/plugins
-wgc plugin test users
+wgc router plugin test users
 ```
 
 ### Test Structure
@@ -244,20 +244,6 @@ query {
       name
       price
       description
-    }
-  }
-}
-
-# Get all external users with their local user information through federation
-query {
-  externalUsers {
-    id
-    name
-    email
-    username
-    localUser: _resolveReference(id: $id) {
-      id
-      role
     }
   }
 }
