@@ -9,6 +9,6 @@
     "build": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router plugin build plugins/users --debug && npm run compose",
     "test": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router plugin test plugins/users",
     "generate": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router plugin build plugins/users --generate-only",
-    "start": "cd ../../cosmo/router && go run cmd/router/main.go -config ../../federation-x-demo/cosmo-router/config.yaml"
+    "start": "cd ../../cosmo/router && go run cmd/router/main.go -config ../../cosmo-plugin-demo/cosmo-router/config.yaml"
   }
 } 

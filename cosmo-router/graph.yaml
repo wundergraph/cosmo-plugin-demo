@@ -4,7 +4,6 @@ subgraphs:
     routing_url: http://localhost:3011/graphql
     schema:
       file: ../subgraphs/products/schema.graphql
-  - name: users
-    plugin:
+  - plugin:
       version: 0.0.1
       path: plugins/users
