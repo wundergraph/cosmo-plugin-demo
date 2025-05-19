@@ -62,6 +62,23 @@ The architecture demonstrates how the gRPC plugin enables both:
    ```
 
 4. Open the GraphQL Playground at [http://localhost:3010](http://localhost:3010)
+   and run the following query:
+   ```graphql
+   query {
+     users {
+       id
+       name
+       email
+       role
+       products {
+         id
+         name
+         price
+         description
+       }
+     }
+   }
+   ```
 
 ## 📝 License
 

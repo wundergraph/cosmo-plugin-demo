@@ -133,7 +133,8 @@ query {
 
 # Update a user
 mutation {
-  updateUser(id: "1", input: {
+  updateUser(input: {
+    id: "1",
     name: "Alice Updated"
     email: "alice.updated@example.com"
     role: ADMIN
