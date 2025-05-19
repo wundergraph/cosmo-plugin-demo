@@ -139,7 +139,7 @@ func (s *UsersService) MutationUpdateUser(ctx context.Context, req *service.Muta
 	response := &service.MutationUpdateUserResponse{}
 
 	// Check if user exists
-	user, found := mockUsers[req.Id]
+	user, found := mockUsers[req.Input.Id]
 	if !found {
 		return response, nil
 	}
@@ -159,10 +159,55 @@ func (s *UsersService) MutationUpdateUser(ctx context.Context, req *service.Muta
 	}
 
 	// Update the user in our mock database
-	mockUsers[req.Id] = user
+	mockUsers[req.Input.Id] = user
 
 	// Return the updated user
 	response.UpdateUser = user
+
+	return response, nil
+}
+
+// MutationUpdateUsers updates multiple users' information in a batch.
+// Only updates fields that are provided in each input.
+// Returns the updated users that were found, skipping any that don't exist.
+func (s *UsersService) MutationUpdateUsers(ctx context.Context, req *service.MutationUpdateUsersRequest) (*service.MutationUpdateUsersResponse, error) {
+	response := &service.MutationUpdateUsersResponse{
+		UpdateUsers: make([]*service.User, 0, len(req.Input)),
+	}
+
+	// Process each user update in the batch request
+	for _, input := range req.Input {
+		// Skip if no ID is provided
+		if input.Id == "" {
+			continue
+		}
+
+		// Check if user exists
+		user, found := mockUsers[input.Id]
+		if !found {
+			continue
+		}
+
+		// Update user fields if provided in the input
+		if input.Name != "" {
+			user.Name = input.Name
+		}
+
+		if input.Email != "" {
+			user.Email = input.Email
+		}
+
+		// Update role if provided
+		if input.Role != service.UserRole_USER_ROLE_UNSPECIFIED {
+			user.Role = input.Role
+		}
+
+		// Update the user in our mock database
+		mockUsers[input.Id] = user
+
+		// Add the updated user to the response
+		response.UpdateUsers = append(response.UpdateUsers, user)
+	}
 
 	return response, nil
 }

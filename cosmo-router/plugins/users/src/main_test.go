@@ -382,3 +382,228 @@ func TestQueryExternalUser(t *testing.T) {
 		})
 	}
 }
+
+func TestMutationUpdateUser(t *testing.T) {
+	// Setup basic service - no need for HTTP mocks
+	svc := setupTestService(t)
+	defer svc.cleanup()
+
+	// Store original user data to restore after test
+	origUser := *mockUsers["1"]
+	defer func() {
+		mockUsers["1"] = &origUser
+	}()
+
+	tests := []struct {
+		name    string
+		input   *service.UserInput
+		want    *service.User
+		wantErr bool
+	}{
+		{
+			name: "valid update - name only",
+			input: &service.UserInput{
+				Id:   "1",
+				Name: "Alice Updated",
+			},
+			want: &service.User{
+				Id:    "1",
+				Name:  "Alice Updated",
+				Email: "alice@example.com",
+				Role:  service.UserRole_USER_ROLE_ADMIN,
+			},
+			wantErr: false,
+		},
+		{
+			name: "valid update - email only",
+			input: &service.UserInput{
+				Id:    "1",
+				Email: "alice.updated@example.com",
+			},
+			want: &service.User{
+				Id:    "1",
+				Name:  "Alice Updated", // Name from previous test
+				Email: "alice.updated@example.com",
+				Role:  service.UserRole_USER_ROLE_ADMIN,
+			},
+			wantErr: false,
+		},
+		{
+			name: "valid update - role only",
+			input: &service.UserInput{
+				Id:   "1",
+				Role: service.UserRole_USER_ROLE_USER,
+			},
+			want: &service.User{
+				Id:    "1",
+				Name:  "Alice Updated",             // Name from previous test
+				Email: "alice.updated@example.com", // Email from previous test
+				Role:  service.UserRole_USER_ROLE_USER,
+			},
+			wantErr: false,
+		},
+		{
+			name: "nonexistent user",
+			input: &service.UserInput{
+				Id:   "999",
+				Name: "Nonexistent User",
+			},
+			want:    &service.User{},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := &service.MutationUpdateUserRequest{
+				Input: tt.input,
+			}
+
+			resp, err := svc.usersClient.MutationUpdateUser(context.Background(), req)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			assert.NoError(t, err)
+
+			if tt.want.Name != "" { // Only check when we expect a valid response
+				assert.NotNil(t, resp.UpdateUser)
+				assert.Equal(t, tt.want.Id, resp.UpdateUser.Id)
+				assert.Equal(t, tt.want.Name, resp.UpdateUser.Name)
+				assert.Equal(t, tt.want.Email, resp.UpdateUser.Email)
+				assert.Equal(t, tt.want.Role, resp.UpdateUser.Role)
+			} else {
+				// For nonexistent users, expect empty response
+				assert.Nil(t, resp.UpdateUser)
+			}
+		})
+	}
+}
+
+func TestMutationUpdateUsers(t *testing.T) {
+	// Setup basic service - no need for HTTP mocks
+	svc := setupTestService(t)
+	defer svc.cleanup()
+
+	// Store original user data to restore after test
+	origUsers := make(map[string]*service.User)
+	for id, user := range mockUsers {
+		userCopy := *user
+		origUsers[id] = &userCopy
+	}
+	defer func() {
+		for id, user := range origUsers {
+			mockUsers[id] = user
+		}
+	}()
+
+	tests := []struct {
+		name    string
+		inputs  []*service.UserInput
+		want    []*service.User
+		wantErr bool
+	}{
+		{
+			name: "update multiple valid users",
+			inputs: []*service.UserInput{
+				{
+					Id:    "1",
+					Name:  "Alice Batch Updated",
+					Email: "alice.batch@example.com",
+				},
+				{
+					Id:   "2",
+					Name: "Bob Batch Updated",
+					Role: service.UserRole_USER_ROLE_ADMIN,
+				},
+			},
+			want: []*service.User{
+				{
+					Id:    "1",
+					Name:  "Alice Batch Updated",
+					Email: "alice.batch@example.com",
+					Role:  service.UserRole_USER_ROLE_ADMIN,
+				},
+				{
+					Id:    "2",
+					Name:  "Bob Batch Updated",
+					Email: "bob@example.com",
+					Role:  service.UserRole_USER_ROLE_ADMIN,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "mix of valid and invalid users",
+			inputs: []*service.UserInput{
+				{
+					Id:   "3",
+					Name: "Charlie Batch Updated",
+				},
+				{
+					Id:   "999", // Nonexistent user
+					Name: "Nonexistent User",
+				},
+			},
+			want: []*service.User{
+				{
+					Id:    "3",
+					Name:  "Charlie Batch Updated",
+					Email: "charlie@example.com",
+					Role:  service.UserRole_USER_ROLE_USER,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name:    "empty input",
+			inputs:  []*service.UserInput{},
+			want:    []*service.User{},
+			wantErr: false,
+		},
+		{
+			name: "missing ID",
+			inputs: []*service.UserInput{
+				{
+					Name: "Missing ID User",
+				},
+			},
+			want:    []*service.User{},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := &service.MutationUpdateUsersRequest{
+				Input: tt.inputs,
+			}
+
+			resp, err := svc.usersClient.MutationUpdateUsers(context.Background(), req)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			assert.NoError(t, err)
+			assert.Equal(t, len(tt.want), len(resp.UpdateUsers))
+
+			// Create a map of expected users by ID for easier comparison
+			expectedUsers := make(map[string]*service.User)
+			for _, user := range tt.want {
+				expectedUsers[user.Id] = user
+			}
+
+			// Check each returned user against expected values
+			for _, updatedUser := range resp.UpdateUsers {
+				expected, ok := expectedUsers[updatedUser.Id]
+				assert.True(t, ok, "User %s should be in the expected results", updatedUser.Id)
+				assert.Equal(t, expected.Id, updatedUser.Id)
+				assert.Equal(t, expected.Name, updatedUser.Name)
+				assert.Equal(t, expected.Email, updatedUser.Email)
+				assert.Equal(t, expected.Role, updatedUser.Role)
+			}
+		})
+	}
+}

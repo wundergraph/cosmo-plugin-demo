@@ -1,12 +1,41 @@
+"""
+Root Query type providing access to user data
+"""
 type Query {
+  """
+  Returns a list of all internal users
+  """
   users: [User!]!
+  
+  """
+  Returns a single internal user by ID
+  """
   user(id: ID!): User
+  
+  """
+  Returns a list of all external users
+  """
   externalUsers: [ExternalUser!]!
+  
+  """
+  Returns a single external user by ID
+  """
   externalUser(id: ID!): ExternalUser
 }
 
+"""
+Root Mutation type for modifying user data
+"""
 type Mutation {
-  updateUser(id: ID!, input: UserInput!): User
+  """
+  Updates a single user's information
+  """
+  updateUser(input: UserInput!): User
+  
+  """
+  Updates multiple users' information in a single operation
+  """
+  updateUsers(input: [UserInput!]!): [User!]!
 }
 
 type User @key(fields: "id") {
@@ -53,6 +82,7 @@ enum UserRole {
 }
 
 input UserInput {
+  id: ID!
   name: String
   email: String
   role: UserRole
