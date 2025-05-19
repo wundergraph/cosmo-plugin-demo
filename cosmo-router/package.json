@@ -5,10 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "compose": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router compose -i graph.yaml -o config.json",
-    "build": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router plugin build plugins/users --debug && npm run compose",
-    "test": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router plugin test plugins/users",
-    "generate": "npx tsx --env-file ../../cosmo/cli/.env ../../cosmo/cli/src/index.ts router plugin build plugins/users --generate-only",
-    "start": "cd ../../cosmo/router && go run cmd/router/main.go -config ../../cosmo-plugin-demo/cosmo-router/config.yaml"
+    "compose": "npx wgc@latest router compose -i graph.yaml -o config.json",
+    "build": "npx wgc@latest router plugin build plugins/users --debug && npm run compose",
+    "test": "npx wgc@latest router plugin test plugins/users",
+    "generate": "npx wgc@latest router plugin build plugins/users --generate-only",
+    "postinstall": "npx wgc@latest router download-binary -o release && chmod +x release/router",
+    "start": "./release/router"
   }
 } 
