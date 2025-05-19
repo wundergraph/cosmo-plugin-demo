@@ -9,7 +9,7 @@
     "build": "npx wgc@latest router plugin build plugins/users --debug && npm run compose",
     "test": "npx wgc@latest router plugin test plugins/users",
     "generate": "npx wgc@latest router plugin build plugins/users --generate-only",
-    "postinstall": "npx wgc@latest router download-binary -o release && chmod +x release/router",
+    "postinstall": "rm -rf release && npx wgc@latest router download-binary -o release && chmod +x release/router",
     "start": "./release/router"
   }
 } 

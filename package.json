@@ -27,8 +27,7 @@
   "dependencies": {
     "@apollo/server": "^4.9.5",
     "graphql": "^16.8.1",
-    "graphql-tag": "^2.12.6",
-    "wgc": "^0.80.0"
+    "graphql-tag": "^2.12.6"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

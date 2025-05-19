@@ -39,6 +39,7 @@ The architecture demonstrates how the gRPC plugin enables both:
 
 ### Prerequisites
 
+- Linux or macOS
 - Node.js [LTS](https://nodejs.org/en/about/releases/)
 - npm or yarn
 
