@@ -39,9 +39,13 @@ type Mutation {
 }
 
 type User @key(fields: "id") {
+  """ The unique identifier for the user """
   id: ID!
+  """ The user's name """
   name: String!
+  """ The user's email address """
   email: String!
+  """ The user's role in the system """
   role: UserRole!
 }
 
