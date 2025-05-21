@@ -6,8 +6,8 @@ dev_mode: true
 
 execution_config:
   file:
-    path: ../../cosmo-plugin-demo/cosmo-router/config.json
+    path: config.json
 
 plugins:
   enabled: true
-  path: "../../cosmo-plugin-demo/cosmo-router/plugins"
+  path: plugins
