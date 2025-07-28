@@ -13,6 +13,7 @@ import (
 	routerplugin "github.com/wundergraph/cosmo/router-plugin"
 	"github.com/wundergraph/cosmo/router-plugin/httpclient"
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 // httpClient is used to make external API requests to JSONPlaceholder
@@ -145,12 +146,12 @@ func (s *UsersService) MutationUpdateUser(ctx context.Context, req *service.Muta
 	}
 
 	// Update user fields if provided in the input
-	if req.Input.Name != "" {
-		user.Name = req.Input.Name
+	if req.Input.Name.GetValue() != "" {
+		user.Name = req.Input.Name.GetValue()
 	}
 
-	if req.Input.Email != "" {
-		user.Email = req.Input.Email
+	if req.Input.Email.GetValue() != "" {
+		user.Email = req.Input.Email.GetValue()
 	}
 
 	// Update role if provided
@@ -189,12 +190,12 @@ func (s *UsersService) MutationUpdateUsers(ctx context.Context, req *service.Mut
 		}
 
 		// Update user fields if provided in the input
-		if input.Name != "" {
-			user.Name = input.Name
+		if input.Name.GetValue() != "" {
+			user.Name = input.Name.GetValue()
 		}
 
-		if input.Email != "" {
-			user.Email = input.Email
+		if input.Email.GetValue() != "" {
+			user.Email = input.Email.GetValue()
 		}
 
 		// Update role if provided
@@ -237,21 +238,21 @@ func (s *UsersService) QueryExternalUsers(ctx context.Context, req *service.Quer
 			Name:     user.Name,
 			Email:    user.Email,
 			Username: user.Username,
-			Phone:    user.Phone,
-			Website:  user.Website,
+			Phone:    &wrapperspb.StringValue{Value: user.Phone},
+			Website:  &wrapperspb.StringValue{Value: user.Website},
 			Company: &service.Company{
 				Name:        user.Company.Name,
-				CatchPhrase: user.Company.CatchPhrase,
-				Bs:          user.Company.Bs,
+				CatchPhrase: &wrapperspb.StringValue{Value: user.Company.CatchPhrase},
+				Bs:          &wrapperspb.StringValue{Value: user.Company.Bs},
 			},
 			Address: &service.Address{
-				Street:  user.Address.Street,
-				Suite:   user.Address.Suite,
-				City:    user.Address.City,
-				Zipcode: user.Address.Zipcode,
+				Street:  &wrapperspb.StringValue{Value: user.Address.Street},
+				Suite:   &wrapperspb.StringValue{Value: user.Address.Suite},
+				City:    &wrapperspb.StringValue{Value: user.Address.City},
+				Zipcode: &wrapperspb.StringValue{Value: user.Address.Zipcode},
 				Geo: &service.Geo{
-					Lat: user.Address.Geo.Lat,
-					Lng: user.Address.Geo.Lng,
+					Lat: &wrapperspb.StringValue{Value: user.Address.Geo.Lat},
+					Lng: &wrapperspb.StringValue{Value: user.Address.Geo.Lng},
 				},
 			},
 		}
@@ -287,21 +288,21 @@ func (s *UsersService) QueryExternalUser(ctx context.Context, req *service.Query
 		Name:     user.Name,
 		Email:    user.Email,
 		Username: user.Username,
-		Phone:    user.Phone,
-		Website:  user.Website,
+		Phone:    &wrapperspb.StringValue{Value: user.Phone},
+		Website:  &wrapperspb.StringValue{Value: user.Website},
 		Company: &service.Company{
 			Name:        user.Company.Name,
-			CatchPhrase: user.Company.CatchPhrase,
-			Bs:          user.Company.Bs,
+			CatchPhrase: &wrapperspb.StringValue{Value: user.Company.CatchPhrase},
+			Bs:          &wrapperspb.StringValue{Value: user.Company.Bs},
 		},
 		Address: &service.Address{
-			Street:  user.Address.Street,
-			Suite:   user.Address.Suite,
-			City:    user.Address.City,
-			Zipcode: user.Address.Zipcode,
+			Street:  &wrapperspb.StringValue{Value: user.Address.Street},
+			Suite:   &wrapperspb.StringValue{Value: user.Address.Suite},
+			City:    &wrapperspb.StringValue{Value: user.Address.City},
+			Zipcode: &wrapperspb.StringValue{Value: user.Address.Zipcode},
 			Geo: &service.Geo{
-				Lat: user.Address.Geo.Lat,
-				Lng: user.Address.Geo.Lng,
+				Lat: &wrapperspb.StringValue{Value: user.Address.Geo.Lat},
+				Lng: &wrapperspb.StringValue{Value: user.Address.Geo.Lng},
 			},
 		},
 	}

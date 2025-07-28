@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 const bufSize = 1024 * 1024
@@ -320,17 +321,17 @@ func TestQueryExternalUsers(t *testing.T) {
 	assert.Equal(t, "Sincere@april.biz", user.Email)
 
 	// Check address
-	assert.Equal(t, "Kulas Light", user.Address.Street)
-	assert.Equal(t, "Apt. 556", user.Address.Suite)
-	assert.Equal(t, "Gwenborough", user.Address.City)
-	assert.Equal(t, "92998-3874", user.Address.Zipcode)
-	assert.Equal(t, "-37.3159", user.Address.Geo.Lat)
-	assert.Equal(t, "81.1496", user.Address.Geo.Lng)
+	assert.Equal(t, "Kulas Light", user.Address.Street.GetValue())
+	assert.Equal(t, "Apt. 556", user.Address.Suite.GetValue())
+	assert.Equal(t, "Gwenborough", user.Address.City.GetValue())
+	assert.Equal(t, "92998-3874", user.Address.Zipcode.GetValue())
+	assert.Equal(t, "-37.3159", user.Address.Geo.Lat.GetValue())
+	assert.Equal(t, "81.1496", user.Address.Geo.Lng.GetValue())
 
 	// Check company
 	assert.Equal(t, "Romaguera-Crona", user.Company.Name)
-	assert.Equal(t, "Multi-layered client-server neural-net", user.Company.CatchPhrase)
-	assert.Equal(t, "harness real-time e-markets", user.Company.Bs)
+	assert.Equal(t, "Multi-layered client-server neural-net", user.Company.CatchPhrase.GetValue())
+	assert.Equal(t, "harness real-time e-markets", user.Company.Bs.GetValue())
 }
 
 func TestQueryExternalUser(t *testing.T) {
@@ -404,7 +405,7 @@ func TestMutationUpdateUser(t *testing.T) {
 			name: "valid update - name only",
 			input: &service.UserInput{
 				Id:   "1",
-				Name: "Alice Updated",
+				Name: &wrapperspb.StringValue{Value: "Alice Updated"},
 			},
 			want: &service.User{
 				Id:    "1",
@@ -418,7 +419,7 @@ func TestMutationUpdateUser(t *testing.T) {
 			name: "valid update - email only",
 			input: &service.UserInput{
 				Id:    "1",
-				Email: "alice.updated@example.com",
+				Email: &wrapperspb.StringValue{Value: "alice.updated@example.com"},
 			},
 			want: &service.User{
 				Id:    "1",
@@ -446,7 +447,7 @@ func TestMutationUpdateUser(t *testing.T) {
 			name: "nonexistent user",
 			input: &service.UserInput{
 				Id:   "999",
-				Name: "Nonexistent User",
+				Name: &wrapperspb.StringValue{Value: "Nonexistent User"},
 			},
 			want:    &service.User{},
 			wantErr: false,
@@ -509,12 +510,12 @@ func TestMutationUpdateUsers(t *testing.T) {
 			inputs: []*service.UserInput{
 				{
 					Id:    "1",
-					Name:  "Alice Batch Updated",
-					Email: "alice.batch@example.com",
+					Name:  &wrapperspb.StringValue{Value: "Alice Batch Updated"},
+					Email: &wrapperspb.StringValue{Value: "alice.batch@example.com"},
 				},
 				{
 					Id:   "2",
-					Name: "Bob Batch Updated",
+					Name: &wrapperspb.StringValue{Value: "Bob Batch Updated"},
 					Role: service.UserRole_USER_ROLE_ADMIN,
 				},
 			},
@@ -539,11 +540,11 @@ func TestMutationUpdateUsers(t *testing.T) {
 			inputs: []*service.UserInput{
 				{
 					Id:   "3",
-					Name: "Charlie Batch Updated",
+					Name: &wrapperspb.StringValue{Value: "Charlie Batch Updated"},
 				},
 				{
 					Id:   "999", // Nonexistent user
-					Name: "Nonexistent User",
+					Name: &wrapperspb.StringValue{Value: "Nonexistent User"},
 				},
 			},
 			want: []*service.User{
@@ -566,7 +567,7 @@ func TestMutationUpdateUsers(t *testing.T) {
 			name: "missing ID",
 			inputs: []*service.UserInput{
 				{
-					Name: "Missing ID User",
+					Name: &wrapperspb.StringValue{Value: "Missing ID User"},
 				},
 			},
 			want:    []*service.User{},
