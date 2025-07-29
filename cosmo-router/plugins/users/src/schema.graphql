@@ -47,6 +47,10 @@ type User @key(fields: "id") {
   email: String!
   """ The user's role in the system """
   role: UserRole!
+  """ List of permissions granted to the user (always present, may be empty) """
+  permissions: [String!]!
+  """ Optional list of tags associated with the user for categorization """
+  tags: [String!]
 }
 
 type ExternalUser {
@@ -90,4 +94,6 @@ input UserInput {
   name: String
   email: String
   role: UserRole
+  permissions: [String!]
+  tags: [String!]
 }
