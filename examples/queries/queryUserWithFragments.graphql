@@ -1,0 +1,34 @@
+query QueryUser{
+  user(id: 1) {
+    id
+    name
+    email
+    role
+    permissions
+    tags
+    skillCategories
+    recentActivity {
+      ... UserPost
+      ... UserComment
+    }
+    profile {
+      displayName
+      timezone
+      theme
+    }
+    bio
+    age
+  }
+}
+
+fragment UserPost on Post {
+  postId: id
+  title
+  authorId
+}
+
+fragment UserComment on Comment {
+  commentId: id
+  content
+  authorId
+}

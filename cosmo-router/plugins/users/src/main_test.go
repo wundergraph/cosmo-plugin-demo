@@ -20,6 +20,37 @@ import (
 
 const bufSize = 1024 * 1024
 
+// verifyActivityContent is a helper function to verify that actual activities match expected activities
+func verifyActivityContent(t *testing.T, expectedActivities []*service.ActivityItem, actualActivities []*service.ActivityItem, maxItems int) {
+	t.Helper()
+	if maxItems == 0 || maxItems > len(expectedActivities) {
+		maxItems = len(expectedActivities)
+	}
+
+	assert.Equal(t, maxItems, len(actualActivities))
+
+	for j, expectedActivity := range expectedActivities {
+		if j >= maxItems {
+			break
+		}
+		if j < len(actualActivities) {
+			actualActivity := actualActivities[j]
+			if expectedActivity.GetPost() != nil {
+				assert.NotNil(t, actualActivity.GetPost())
+				assert.Nil(t, actualActivity.GetComment())
+				assert.Equal(t, expectedActivity.GetPost().Id, actualActivity.GetPost().Id)
+				assert.Equal(t, expectedActivity.GetPost().Title, actualActivity.GetPost().Title)
+			}
+			if expectedActivity.GetComment() != nil {
+				assert.NotNil(t, actualActivity.GetComment())
+				assert.Nil(t, actualActivity.GetPost())
+				assert.Equal(t, expectedActivity.GetComment().Id, actualActivity.GetComment().Id)
+				assert.Equal(t, expectedActivity.GetComment().Content, actualActivity.GetComment().Content)
+			}
+		}
+	}
+}
+
 // testService is a wrapper that holds the gRPC test components
 type testService struct {
 	grpcConn    *grpc.ClientConn
@@ -170,8 +201,39 @@ func TestLookupUserById(t *testing.T) {
 			name: "valid users",
 			ids:  []string{"1", "2"},
 			want: []*service.User{
-				{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
-				{Id: "2", Name: "Bob Smith", Email: "bob@example.com", Role: service.UserRole_USER_ROLE_USER, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}}},
+				{
+					Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN,
+					Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+					SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+						{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+						{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+						{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+					}}},
+					RecentActivity: []*service.ActivityItem{},
+					Profile: &service.Profile{
+						DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+						Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+						Theme:       service.Theme_THEME_DARK,
+					},
+					Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+					Age: &wrapperspb.Int32Value{Value: 28},
+				},
+				{
+					Id: "2", Name: "Bob Smith", Email: "bob@example.com", Role: service.UserRole_USER_ROLE_USER,
+					Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}},
+					SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+						{List: &service.ListOfString_List{Items: []string{"Python", "Java"}}},
+						{List: &service.ListOfString_List{Items: []string{"Django", "Spring"}}},
+					}}},
+					RecentActivity: []*service.ActivityItem{},
+					Profile: &service.Profile{
+						DisplayName: &wrapperspb.StringValue{Value: "Bob"},
+						Timezone:    &wrapperspb.StringValue{Value: "Europe/London"},
+						Theme:       service.Theme_THEME_LIGHT,
+					},
+					Bio: &wrapperspb.StringValue{Value: "Backend developer passionate about clean code"},
+					Age: &wrapperspb.Int32Value{Value: 32},
+				},
 			},
 			wantErr: false,
 		},
@@ -185,7 +247,23 @@ func TestLookupUserById(t *testing.T) {
 			name: "mixed valid and invalid",
 			ids:  []string{"1", "999"},
 			want: []*service.User{
-				{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
+				{
+					Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN,
+					Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+					SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+						{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+						{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+						{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+					}}},
+					RecentActivity: []*service.ActivityItem{},
+					Profile: &service.Profile{
+						DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+						Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+						Theme:       service.Theme_THEME_DARK,
+					},
+					Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+					Age: &wrapperspb.Int32Value{Value: 28},
+				},
 				{Id: "999"},
 			},
 			wantErr: false,
@@ -220,6 +298,19 @@ func TestLookupUserById(t *testing.T) {
 					if want.Tags != nil {
 						assert.Equal(t, want.Tags.GetList().GetItems(), resp.Result[i].Tags.GetList().GetItems())
 					}
+					if want.SkillCategories != nil {
+						assert.Equal(t, len(want.SkillCategories.GetList().GetItems()), len(resp.Result[i].SkillCategories.GetList().GetItems()))
+					}
+					// Check RecentActivity against actual mock data
+					expectedActivities := userActivityMap[want.Id]
+					verifyActivityContent(t, expectedActivities, resp.Result[i].RecentActivity, 0)
+					if want.Profile != nil {
+						assert.Equal(t, want.Profile.GetDisplayName(), resp.Result[i].Profile.GetDisplayName())
+						assert.Equal(t, want.Profile.GetTimezone(), resp.Result[i].Profile.GetTimezone())
+						assert.Equal(t, want.Profile.Theme, resp.Result[i].Profile.Theme)
+					}
+					assert.Equal(t, want.Bio.GetValue(), resp.Result[i].Bio.GetValue())
+					assert.Equal(t, want.Age.GetValue(), resp.Result[i].Age.GetValue())
 				} else {
 					// For non-existent users, just check ID
 					assert.Equal(t, want.Id, resp.Result[i].Id)
@@ -241,9 +332,25 @@ func TestQueryUser(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "valid user",
-			id:      "1",
-			want:    &service.User{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
+			name: "valid user",
+			id:   "1",
+			want: &service.User{
+				Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN,
+				Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+				SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+					{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+					{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+					{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+				}}},
+				RecentActivity: []*service.ActivityItem{},
+				Profile: &service.Profile{
+					DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+					Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+					Theme:       service.Theme_THEME_DARK,
+				},
+				Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+				Age: &wrapperspb.Int32Value{Value: 28},
+			},
 			wantErr: false,
 		},
 		{
@@ -275,6 +382,19 @@ func TestQueryUser(t *testing.T) {
 				if tt.want.Tags != nil {
 					assert.Equal(t, tt.want.Tags.GetList().GetItems(), resp.User.Tags.GetList().GetItems())
 				}
+				if tt.want.SkillCategories != nil {
+					assert.Equal(t, len(tt.want.SkillCategories.GetList().GetItems()), len(resp.User.SkillCategories.GetList().GetItems()))
+				}
+				// Check RecentActivity against actual mock data
+				expectedActivities := userActivityMap[tt.want.Id]
+				verifyActivityContent(t, expectedActivities, resp.User.RecentActivity, 0)
+				if tt.want.Profile != nil {
+					assert.Equal(t, tt.want.Profile.GetDisplayName(), resp.User.Profile.GetDisplayName())
+					assert.Equal(t, tt.want.Profile.GetTimezone(), resp.User.Profile.GetTimezone())
+					assert.Equal(t, tt.want.Profile.Theme, resp.User.Profile.Theme)
+				}
+				assert.Equal(t, tt.want.Bio.GetValue(), resp.User.Bio.GetValue())
+				assert.Equal(t, tt.want.Age.GetValue(), resp.User.Age.GetValue())
 			} else {
 				// For non-existent users, user should be nil
 				assert.Nil(t, resp.User)
@@ -312,6 +432,19 @@ func TestQueryUsers(t *testing.T) {
 		if mockUser.Tags != nil {
 			assert.Equal(t, mockUser.Tags.GetList().GetItems(), respUser.Tags.GetList().GetItems())
 		}
+		if mockUser.SkillCategories != nil {
+			assert.Equal(t, len(mockUser.SkillCategories.GetList().GetItems()), len(respUser.SkillCategories.GetList().GetItems()))
+		}
+		// Check RecentActivity against actual mock data
+		expectedActivities := userActivityMap[mockUser.Id]
+		verifyActivityContent(t, expectedActivities, respUser.RecentActivity, 0)
+		if mockUser.Profile != nil {
+			assert.Equal(t, mockUser.Profile.DisplayName.GetValue(), respUser.Profile.DisplayName.GetValue())
+			assert.Equal(t, mockUser.Profile.Timezone.GetValue(), respUser.Profile.Timezone.GetValue())
+			assert.Equal(t, mockUser.Profile.Theme, respUser.Profile.Theme)
+		}
+		assert.Equal(t, mockUser.Bio.GetValue(), respUser.Bio.GetValue())
+		assert.Equal(t, mockUser.Age.GetValue(), respUser.Age.GetValue())
 	}
 }
 
@@ -426,6 +559,19 @@ func TestMutationUpdateUser(t *testing.T) {
 				Role:        service.UserRole_USER_ROLE_ADMIN,
 				Permissions: []string{"read", "write"},
 				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+				SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+					{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+					{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+					{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+				}}},
+				RecentActivity: []*service.ActivityItem{},
+				Profile: &service.Profile{
+					DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+					Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+					Theme:       service.Theme_THEME_DARK,
+				},
+				Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+				Age: &wrapperspb.Int32Value{Value: 28},
 			},
 			wantErr: false,
 		},
@@ -442,6 +588,19 @@ func TestMutationUpdateUser(t *testing.T) {
 				Role:        service.UserRole_USER_ROLE_ADMIN,
 				Permissions: []string{"read", "write"},
 				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+				SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+					{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+					{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+					{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+				}}},
+				RecentActivity: []*service.ActivityItem{},
+				Profile: &service.Profile{
+					DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+					Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+					Theme:       service.Theme_THEME_DARK,
+				},
+				Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+				Age: &wrapperspb.Int32Value{Value: 28},
 			},
 			wantErr: false,
 		},
@@ -458,6 +617,19 @@ func TestMutationUpdateUser(t *testing.T) {
 				Role:        service.UserRole_USER_ROLE_USER,
 				Permissions: []string{"read", "write"},
 				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+				SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+					{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+					{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+					{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+				}}},
+				RecentActivity: []*service.ActivityItem{},
+				Profile: &service.Profile{
+					DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+					Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+					Theme:       service.Theme_THEME_DARK,
+				},
+				Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+				Age: &wrapperspb.Int32Value{Value: 28},
 			},
 			wantErr: false,
 		},
@@ -475,6 +647,19 @@ func TestMutationUpdateUser(t *testing.T) {
 				Role:        service.UserRole_USER_ROLE_USER,
 				Permissions: []string{"read", "write", "delete"},
 				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"super-admin", "developer"}}},
+				SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+					{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+					{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+					{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+				}}},
+				RecentActivity: []*service.ActivityItem{},
+				Profile: &service.Profile{
+					DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+					Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+					Theme:       service.Theme_THEME_DARK,
+				},
+				Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+				Age: &wrapperspb.Int32Value{Value: 28},
 			},
 			wantErr: false,
 		},
@@ -513,6 +698,19 @@ func TestMutationUpdateUser(t *testing.T) {
 				if tt.want.Tags != nil {
 					assert.Equal(t, tt.want.Tags.GetList().GetItems(), resp.UpdateUser.Tags.GetList().GetItems())
 				}
+				if tt.want.SkillCategories != nil {
+					assert.Equal(t, len(tt.want.SkillCategories.GetList().GetItems()), len(resp.UpdateUser.SkillCategories.GetList().GetItems()))
+				}
+				// Check RecentActivity against actual mock data
+				expectedActivities := userActivityMap[tt.want.Id]
+				verifyActivityContent(t, expectedActivities, resp.UpdateUser.RecentActivity, 0)
+				if tt.want.Profile != nil {
+					assert.Equal(t, tt.want.Profile.GetDisplayName(), resp.UpdateUser.Profile.GetDisplayName())
+					assert.Equal(t, tt.want.Profile.GetTimezone(), resp.UpdateUser.Profile.GetTimezone())
+					assert.Equal(t, tt.want.Profile.Theme, resp.UpdateUser.Profile.Theme)
+				}
+				assert.Equal(t, tt.want.Bio.GetValue(), resp.UpdateUser.Bio.GetValue())
+				assert.Equal(t, tt.want.Age.GetValue(), resp.UpdateUser.Age.GetValue())
 			} else {
 				// For nonexistent users, expect empty response
 				assert.Nil(t, resp.UpdateUser)
@@ -564,8 +762,21 @@ func TestMutationUpdateUsers(t *testing.T) {
 					Name:        "Alice Batch Updated",
 					Email:       "alice.batch@example.com",
 					Role:        service.UserRole_USER_ROLE_ADMIN,
-					Permissions: []string{"read", "write"},
+					Permissions: []string{"read", "write"}, // Original permissions from mockUsers
 					Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+					SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+						{List: &service.ListOfString_List{Items: []string{"JavaScript", "TypeScript"}}},
+						{List: &service.ListOfString_List{Items: []string{"React", "Vue", "Angular"}}},
+						{List: &service.ListOfString_List{Items: []string{"Node.js", "Express"}}},
+					}}},
+					RecentActivity: []*service.ActivityItem{},
+					Profile: &service.Profile{
+						DisplayName: &wrapperspb.StringValue{Value: "Alice J."},
+						Timezone:    &wrapperspb.StringValue{Value: "America/New_York"},
+						Theme:       service.Theme_THEME_DARK,
+					},
+					Bio: &wrapperspb.StringValue{Value: "Full-stack developer with 5+ years of experience"},
+					Age: &wrapperspb.Int32Value{Value: 28},
 				},
 				{
 					Id:          "2",
@@ -574,6 +785,18 @@ func TestMutationUpdateUsers(t *testing.T) {
 					Role:        service.UserRole_USER_ROLE_ADMIN,
 					Permissions: []string{"read"},
 					Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}},
+					SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+						{List: &service.ListOfString_List{Items: []string{"Python", "Java"}}},
+						{List: &service.ListOfString_List{Items: []string{"Django", "Spring"}}},
+					}}},
+					RecentActivity: []*service.ActivityItem{},
+					Profile: &service.Profile{
+						DisplayName: &wrapperspb.StringValue{Value: "Bob"},
+						Timezone:    &wrapperspb.StringValue{Value: "Europe/London"},
+						Theme:       service.Theme_THEME_LIGHT,
+					},
+					Bio: &wrapperspb.StringValue{Value: "Backend developer passionate about clean code"},
+					Age: &wrapperspb.Int32Value{Value: 32},
 				},
 			},
 			wantErr: false,
@@ -598,6 +821,16 @@ func TestMutationUpdateUsers(t *testing.T) {
 					Role:        service.UserRole_USER_ROLE_USER,
 					Permissions: []string{"read"},
 					Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}},
+					SkillCategories: &service.ListOfListOfString{List: &service.ListOfListOfString_List{Items: []*service.ListOfString{
+						{List: &service.ListOfString_List{Items: []string{"Go", "Rust"}}},
+						{List: &service.ListOfString_List{Items: []string{"Docker", "Kubernetes"}}},
+					}}},
+					RecentActivity: []*service.ActivityItem{},
+					Profile: &service.Profile{
+						Timezone: &wrapperspb.StringValue{Value: "Asia/Tokyo"},
+						Theme:    service.Theme_THEME_AUTO,
+					},
+					Age: &wrapperspb.Int32Value{Value: 29},
 				},
 			},
 			wantErr: false,
@@ -653,7 +886,240 @@ func TestMutationUpdateUsers(t *testing.T) {
 				if expected.Tags != nil {
 					assert.Equal(t, expected.Tags.GetList().GetItems(), updatedUser.Tags.GetList().GetItems())
 				}
+				if expected.SkillCategories != nil {
+					assert.Equal(t, len(expected.SkillCategories.GetList().GetItems()), len(updatedUser.SkillCategories.GetList().GetItems()))
+				}
+				// Check RecentActivity against actual mock data
+				expectedActivities := userActivityMap[expected.Id]
+				verifyActivityContent(t, expectedActivities, updatedUser.RecentActivity, 0)
+				if expected.Profile != nil {
+					assert.Equal(t, expected.Profile.GetDisplayName(), updatedUser.Profile.GetDisplayName())
+					assert.Equal(t, expected.Profile.GetTimezone(), updatedUser.Profile.GetTimezone())
+					assert.Equal(t, expected.Profile.Theme, updatedUser.Profile.Theme)
+				}
+				assert.Equal(t, expected.Bio.GetValue(), updatedUser.Bio.GetValue())
+				assert.Equal(t, expected.Age.GetValue(), updatedUser.Age.GetValue())
 			}
 		})
 	}
+}
+
+func TestQueryUserActivity(t *testing.T) {
+	// Setup basic service
+	svc := setupTestService(t)
+	defer svc.cleanup()
+
+	tests := []struct {
+		name    string
+		userId  string
+		limit   int32
+		wantErr bool
+	}{
+		{
+			name:    "valid user with default limit",
+			userId:  "1",
+			limit:   0, // default limit
+			wantErr: false,
+		},
+		{
+			name:    "valid user with specific limit",
+			userId:  "1",
+			limit:   2,
+			wantErr: false,
+		},
+		{
+			name:    "user with fewer activities",
+			userId:  "4",
+			limit:   0, // default limit
+			wantErr: false,
+		},
+		{
+			name:    "nonexistent user",
+			userId:  "999",
+			limit:   10,
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := &service.QueryUserActivityRequest{
+				UserId: tt.userId,
+				Limit:  &wrapperspb.Int32Value{Value: tt.limit},
+			}
+
+			resp, err := svc.usersClient.QueryUserActivity(context.Background(), req)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			assert.NoError(t, err)
+
+			// Get expected activities from mock data and verify content
+			expectedActivities := userActivityMap[tt.userId]
+			expectedLen := len(expectedActivities)
+
+			// If limit is specified and > 0, use the minimum of limit and expected length
+			if tt.limit > 0 && int(tt.limit) < expectedLen {
+				expectedLen = int(tt.limit)
+			}
+
+			verifyActivityContent(t, expectedActivities, resp.UserActivity, expectedLen)
+		})
+	}
+}
+
+func TestMutationCreatePost(t *testing.T) {
+	// Setup basic service
+	svc := setupTestService(t)
+	defer svc.cleanup()
+
+	// Store original user activity count to verify the post was added
+	originalActivityCount := len(userActivityMap["1"])
+
+	tests := []struct {
+		name    string
+		input   *service.PostInput
+		wantErr bool
+	}{
+		{
+			name: "valid post creation",
+			input: &service.PostInput{
+				Title:    "Test Post",
+				AuthorId: "1",
+			},
+			wantErr: false,
+		},
+		{
+			name: "invalid author",
+			input: &service.PostInput{
+				Title:    "Post by nonexistent user",
+				AuthorId: "999",
+			},
+			wantErr: true,
+		},
+		{
+			name: "another valid post",
+			input: &service.PostInput{
+				Title:    "Another Test Post",
+				AuthorId: "2",
+			},
+			wantErr: false,
+		},
+	}
+
+	validPostsCreated := 0
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := &service.MutationCreatePostRequest{
+				Input: tt.input,
+			}
+
+			resp, err := svc.usersClient.MutationCreatePost(context.Background(), req)
+			if tt.wantErr {
+				assert.Error(t, err)
+				return
+			}
+
+			assert.NoError(t, err)
+			assert.NotNil(t, resp.CreatePost)
+			assert.Equal(t, tt.input.Title, resp.CreatePost.Title)
+			assert.Equal(t, tt.input.AuthorId, resp.CreatePost.AuthorId)
+			assert.NotEmpty(t, resp.CreatePost.Id)
+
+			// Verify the post was added to the author's recent activity
+			userResp, err := svc.usersClient.QueryUser(context.Background(), &service.QueryUserRequest{Id: tt.input.AuthorId})
+			assert.NoError(t, err)
+			assert.NotNil(t, userResp.User)
+
+			// The new post should be the first item in recent activity (most recent first)
+			assert.True(t, len(userResp.User.RecentActivity) > 0)
+			firstActivity := userResp.User.RecentActivity[0]
+			assert.NotNil(t, firstActivity.GetPost())
+			assert.Equal(t, resp.CreatePost.Id, firstActivity.GetPost().Id)
+			assert.Equal(t, resp.CreatePost.Title, firstActivity.GetPost().Title)
+
+			validPostsCreated++
+		})
+	}
+
+	// Verify user 1's activity count increased by 1 (only 1 valid post for user 1)
+	newActivityCount := len(userActivityMap["1"])
+	assert.Equal(t, originalActivityCount+1, newActivityCount)
+}
+
+func TestCreatePostIntegration(t *testing.T) {
+	// Setup basic service
+	svc := setupTestService(t)
+	defer svc.cleanup()
+
+	userID := "2" // Use Bob as our test user
+	postTitle := "Integration Test Post"
+
+	// Step 1: Query user to get initial state
+	initialUserResp, err := svc.usersClient.QueryUser(context.Background(), &service.QueryUserRequest{Id: userID})
+	assert.NoError(t, err)
+	assert.NotNil(t, initialUserResp.User)
+
+	initialActivityCount := len(initialUserResp.User.RecentActivity)
+	t.Logf("User %s initial activity count: %d", userID, initialActivityCount)
+
+	// Step 2: Create a new post for this user
+	createPostReq := &service.MutationCreatePostRequest{
+		Input: &service.PostInput{
+			Title:    postTitle,
+			AuthorId: userID,
+		},
+	}
+
+	createPostResp, err := svc.usersClient.MutationCreatePost(context.Background(), createPostReq)
+	assert.NoError(t, err)
+	assert.NotNil(t, createPostResp.CreatePost)
+	assert.Equal(t, postTitle, createPostResp.CreatePost.Title)
+	assert.Equal(t, userID, createPostResp.CreatePost.AuthorId)
+
+	createdPostID := createPostResp.CreatePost.Id
+	t.Logf("Created post with ID: %s, Title: %s", createdPostID, postTitle)
+
+	// Step 3: Query user again to verify the post was added to their activity
+	updatedUserResp, err := svc.usersClient.QueryUser(context.Background(), &service.QueryUserRequest{Id: userID})
+	assert.NoError(t, err)
+	assert.NotNil(t, updatedUserResp.User)
+
+	// Verify activity count increased by 1
+	updatedActivityCount := len(updatedUserResp.User.RecentActivity)
+	assert.Equal(t, initialActivityCount+1, updatedActivityCount)
+	t.Logf("User %s updated activity count: %d", userID, updatedActivityCount)
+
+	// Verify the new post is the first item in recent activity (most recent first)
+	assert.True(t, len(updatedUserResp.User.RecentActivity) > 0)
+	firstActivity := updatedUserResp.User.RecentActivity[0]
+
+	// Verify it's a Post activity (not a Comment)
+	assert.NotNil(t, firstActivity.GetPost())
+	assert.Nil(t, firstActivity.GetComment())
+
+	// Verify the post content matches what we created
+	assert.Equal(t, createdPostID, firstActivity.GetPost().Id)
+	assert.Equal(t, postTitle, firstActivity.GetPost().Title)
+	assert.Equal(t, userID, firstActivity.GetPost().AuthorId)
+
+	t.Logf("Verified new post appears first in user's recent activity")
+
+	// Step 4: Query user activity directly to double-check
+	activityResp, err := svc.usersClient.QueryUserActivity(context.Background(), &service.QueryUserActivityRequest{
+		UserId: userID,
+		Limit:  &wrapperspb.Int32Value{Value: 1}, // Just get the most recent activity
+	})
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(activityResp.UserActivity))
+
+	// Verify this also shows our new post
+	mostRecentActivity := activityResp.UserActivity[0]
+	assert.NotNil(t, mostRecentActivity.GetPost())
+	assert.Equal(t, createdPostID, mostRecentActivity.GetPost().Id)
+	assert.Equal(t, postTitle, mostRecentActivity.GetPost().Title)
+
+	t.Logf("Verified new post also appears via QueryUserActivity endpoint")
 }

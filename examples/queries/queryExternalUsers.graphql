@@ -1,0 +1,14 @@
+query {
+  externalUsers {
+    id
+    name
+    email
+    username
+    phone
+    website
+    company {
+      catchPhrase
+      bs
+    }
+  }
+}

@@ -1,0 +1,15 @@
+query UserActivity {
+  userActivity(userId: 1) {
+    __typename
+    ... on Post {
+      id
+      title
+      authorId
+    }
+    ... on Comment {
+      id
+      content
+      authorId
+    }
+  }
+}

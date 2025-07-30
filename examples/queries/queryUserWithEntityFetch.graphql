@@ -1,0 +1,16 @@
+  query QueryWithEntityFetch{
+    user(id: 1) {
+      name
+      products {
+        id
+        name
+        price
+        description
+        user {
+          id
+          name
+          email
+        }
+      }
+    }
+  }

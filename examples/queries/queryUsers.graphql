@@ -1,0 +1,30 @@
+query QueryUsers{
+  users {
+    id
+    name
+    email
+    role
+    permissions
+    tags
+    skillCategories
+    recentActivity {
+      ... on Post {
+        postId: id
+        title
+        authorId
+      }
+      ... on Comment {
+        commentId: id
+        content
+        authorId
+      }
+    }
+    profile {
+      displayName
+      timezone
+      theme
+    }
+    bio
+    age
+  }
+}
