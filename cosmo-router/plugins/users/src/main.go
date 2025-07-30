@@ -80,10 +80,10 @@ type UsersService struct {
 // Mock user data store for demonstration purposes
 // In a production environment, this would be replaced with a proper database
 var mockUsers = map[string]*service.User{
-	"1": {Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN},
-	"2": {Id: "2", Name: "Bob Smith", Email: "bob@example.com", Role: service.UserRole_USER_ROLE_USER},
-	"3": {Id: "3", Name: "Charlie Brown", Email: "charlie@example.com", Role: service.UserRole_USER_ROLE_USER},
-	"4": {Id: "4", Name: "Dana Lee", Email: "dana@example.com", Role: service.UserRole_USER_ROLE_GUEST},
+	"1": {Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
+	"2": {Id: "2", Name: "Bob Smith", Email: "bob@example.com", Role: service.UserRole_USER_ROLE_USER, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}}},
+	"3": {Id: "3", Name: "Charlie Brown", Email: "charlie@example.com", Role: service.UserRole_USER_ROLE_USER, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}}},
+	"4": {Id: "4", Name: "Dana Lee", Email: "dana@example.com", Role: service.UserRole_USER_ROLE_GUEST, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"guest"}}}},
 }
 
 // LookupUserById implements the batch lookup functionality.
@@ -159,6 +159,14 @@ func (s *UsersService) MutationUpdateUser(ctx context.Context, req *service.Muta
 		user.Role = req.Input.Role
 	}
 
+	if len(req.Input.Permissions.GetList().GetItems()) > 0 {
+		user.Permissions = req.Input.Permissions.GetList().GetItems()
+	}
+
+	if len(req.Input.Tags.GetList().GetItems()) > 0 {
+		user.Tags = &service.ListOfString{List: &service.ListOfString_List{Items: req.Input.Tags.GetList().GetItems()}}
+	}
+
 	// Update the user in our mock database
 	mockUsers[req.Input.Id] = user
 
@@ -201,6 +209,14 @@ func (s *UsersService) MutationUpdateUsers(ctx context.Context, req *service.Mut
 		// Update role if provided
 		if input.Role != service.UserRole_USER_ROLE_UNSPECIFIED {
 			user.Role = input.Role
+		}
+
+		if len(input.Permissions.GetList().GetItems()) > 0 {
+			user.Permissions = input.Permissions.GetList().GetItems()
+		}
+
+		if len(input.Tags.GetList().GetItems()) > 0 {
+			user.Tags = &service.ListOfString{List: &service.ListOfString_List{Items: input.Tags.GetList().GetItems()}}
 		}
 
 		// Update the user in our mock database

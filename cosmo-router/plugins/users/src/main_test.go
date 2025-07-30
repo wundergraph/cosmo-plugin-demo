@@ -170,8 +170,8 @@ func TestLookupUserById(t *testing.T) {
 			name: "valid users",
 			ids:  []string{"1", "2"},
 			want: []*service.User{
-				{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN},
-				{Id: "2", Name: "Bob Smith", Email: "bob@example.com", Role: service.UserRole_USER_ROLE_USER},
+				{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
+				{Id: "2", Name: "Bob Smith", Email: "bob@example.com", Role: service.UserRole_USER_ROLE_USER, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}}},
 			},
 			wantErr: false,
 		},
@@ -185,7 +185,7 @@ func TestLookupUserById(t *testing.T) {
 			name: "mixed valid and invalid",
 			ids:  []string{"1", "999"},
 			want: []*service.User{
-				{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN},
+				{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
 				{Id: "999"},
 			},
 			wantErr: false,
@@ -216,6 +216,10 @@ func TestLookupUserById(t *testing.T) {
 					assert.Equal(t, want.Name, resp.Result[i].Name)
 					assert.Equal(t, want.Email, resp.Result[i].Email)
 					assert.Equal(t, want.Role, resp.Result[i].Role)
+					assert.Equal(t, want.Permissions, resp.Result[i].Permissions)
+					if want.Tags != nil {
+						assert.Equal(t, want.Tags.GetList().GetItems(), resp.Result[i].Tags.GetList().GetItems())
+					}
 				} else {
 					// For non-existent users, just check ID
 					assert.Equal(t, want.Id, resp.Result[i].Id)
@@ -239,7 +243,7 @@ func TestQueryUser(t *testing.T) {
 		{
 			name:    "valid user",
 			id:      "1",
-			want:    &service.User{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN},
+			want:    &service.User{Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
 			wantErr: false,
 		},
 		{
@@ -267,6 +271,10 @@ func TestQueryUser(t *testing.T) {
 				assert.Equal(t, tt.want.Name, resp.User.Name)
 				assert.Equal(t, tt.want.Email, resp.User.Email)
 				assert.Equal(t, tt.want.Role, resp.User.Role)
+				assert.Equal(t, tt.want.Permissions, resp.User.Permissions)
+				if tt.want.Tags != nil {
+					assert.Equal(t, tt.want.Tags.GetList().GetItems(), resp.User.Tags.GetList().GetItems())
+				}
 			} else {
 				// For non-existent users, user should be nil
 				assert.Nil(t, resp.User)
@@ -300,6 +308,10 @@ func TestQueryUsers(t *testing.T) {
 		assert.Equal(t, mockUser.Name, respUser.Name)
 		assert.Equal(t, mockUser.Email, respUser.Email)
 		assert.Equal(t, mockUser.Role, respUser.Role)
+		assert.Equal(t, mockUser.Permissions, respUser.Permissions)
+		if mockUser.Tags != nil {
+			assert.Equal(t, mockUser.Tags.GetList().GetItems(), respUser.Tags.GetList().GetItems())
+		}
 	}
 }
 
@@ -408,10 +420,12 @@ func TestMutationUpdateUser(t *testing.T) {
 				Name: &wrapperspb.StringValue{Value: "Alice Updated"},
 			},
 			want: &service.User{
-				Id:    "1",
-				Name:  "Alice Updated",
-				Email: "alice@example.com",
-				Role:  service.UserRole_USER_ROLE_ADMIN,
+				Id:          "1",
+				Name:        "Alice Updated",
+				Email:       "alice@example.com",
+				Role:        service.UserRole_USER_ROLE_ADMIN,
+				Permissions: []string{"read", "write"},
+				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
 			},
 			wantErr: false,
 		},
@@ -422,10 +436,12 @@ func TestMutationUpdateUser(t *testing.T) {
 				Email: &wrapperspb.StringValue{Value: "alice.updated@example.com"},
 			},
 			want: &service.User{
-				Id:    "1",
-				Name:  "Alice Updated", // Name from previous test
-				Email: "alice.updated@example.com",
-				Role:  service.UserRole_USER_ROLE_ADMIN,
+				Id:          "1",
+				Name:        "Alice Updated",
+				Email:       "alice.updated@example.com",
+				Role:        service.UserRole_USER_ROLE_ADMIN,
+				Permissions: []string{"read", "write"},
+				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
 			},
 			wantErr: false,
 		},
@@ -436,10 +452,29 @@ func TestMutationUpdateUser(t *testing.T) {
 				Role: service.UserRole_USER_ROLE_USER,
 			},
 			want: &service.User{
-				Id:    "1",
-				Name:  "Alice Updated",             // Name from previous test
-				Email: "alice.updated@example.com", // Email from previous test
-				Role:  service.UserRole_USER_ROLE_USER,
+				Id:          "1",
+				Name:        "Alice Updated",
+				Email:       "alice.updated@example.com",
+				Role:        service.UserRole_USER_ROLE_USER,
+				Permissions: []string{"read", "write"},
+				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
+			},
+			wantErr: false,
+		},
+		{
+			name: "valid update - permissions and tags",
+			input: &service.UserInput{
+				Id:          "1",
+				Permissions: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"read", "write", "delete"}}},
+				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"super-admin", "developer"}}},
+			},
+			want: &service.User{
+				Id:          "1",
+				Name:        "Alice Updated",
+				Email:       "alice.updated@example.com",
+				Role:        service.UserRole_USER_ROLE_USER,
+				Permissions: []string{"read", "write", "delete"},
+				Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"super-admin", "developer"}}},
 			},
 			wantErr: false,
 		},
@@ -474,6 +509,10 @@ func TestMutationUpdateUser(t *testing.T) {
 				assert.Equal(t, tt.want.Name, resp.UpdateUser.Name)
 				assert.Equal(t, tt.want.Email, resp.UpdateUser.Email)
 				assert.Equal(t, tt.want.Role, resp.UpdateUser.Role)
+				assert.Equal(t, tt.want.Permissions, resp.UpdateUser.Permissions)
+				if tt.want.Tags != nil {
+					assert.Equal(t, tt.want.Tags.GetList().GetItems(), resp.UpdateUser.Tags.GetList().GetItems())
+				}
 			} else {
 				// For nonexistent users, expect empty response
 				assert.Nil(t, resp.UpdateUser)
@@ -521,16 +560,20 @@ func TestMutationUpdateUsers(t *testing.T) {
 			},
 			want: []*service.User{
 				{
-					Id:    "1",
-					Name:  "Alice Batch Updated",
-					Email: "alice.batch@example.com",
-					Role:  service.UserRole_USER_ROLE_ADMIN,
+					Id:          "1",
+					Name:        "Alice Batch Updated",
+					Email:       "alice.batch@example.com",
+					Role:        service.UserRole_USER_ROLE_ADMIN,
+					Permissions: []string{"read", "write"},
+					Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}},
 				},
 				{
-					Id:    "2",
-					Name:  "Bob Batch Updated",
-					Email: "bob@example.com",
-					Role:  service.UserRole_USER_ROLE_ADMIN,
+					Id:          "2",
+					Name:        "Bob Batch Updated",
+					Email:       "bob@example.com",
+					Role:        service.UserRole_USER_ROLE_ADMIN,
+					Permissions: []string{"read"},
+					Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}},
 				},
 			},
 			wantErr: false,
@@ -549,10 +592,12 @@ func TestMutationUpdateUsers(t *testing.T) {
 			},
 			want: []*service.User{
 				{
-					Id:    "3",
-					Name:  "Charlie Batch Updated",
-					Email: "charlie@example.com",
-					Role:  service.UserRole_USER_ROLE_USER,
+					Id:          "3",
+					Name:        "Charlie Batch Updated",
+					Email:       "charlie@example.com",
+					Role:        service.UserRole_USER_ROLE_USER,
+					Permissions: []string{"read"},
+					Tags:        &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}},
 				},
 			},
 			wantErr: false,
@@ -604,6 +649,10 @@ func TestMutationUpdateUsers(t *testing.T) {
 				assert.Equal(t, expected.Name, updatedUser.Name)
 				assert.Equal(t, expected.Email, updatedUser.Email)
 				assert.Equal(t, expected.Role, updatedUser.Role)
+				assert.Equal(t, expected.Permissions, updatedUser.Permissions)
+				if expected.Tags != nil {
+					assert.Equal(t, expected.Tags.GetList().GetItems(), updatedUser.Tags.GetList().GetItems())
+				}
 			}
 		})
 	}
