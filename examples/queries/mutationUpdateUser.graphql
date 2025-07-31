@@ -1,0 +1,23 @@
+mutation {
+  updateUser(input: {
+    id: 1
+    skillCategories: [
+      ["First Skill"],
+      ["Second Skill"]
+    ]
+    profile: {
+      displayName: "Test Profile"
+      timezone: "UTC"
+      theme: LIGHT
+    }
+  }) {
+    id
+    name
+    skillCategories
+    profile {
+      displayName
+      timezone
+      theme
+    }
+  }
+}

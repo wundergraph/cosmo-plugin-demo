@@ -38,52 +38,12 @@ func main() {
 	pl.Serve()
 }
 
-// Geo represents geographic coordinates in the JSONPlaceholder API
-type Geo struct {
-	Lat string `json:"lat"`
-	Lng string `json:"lng"`
-}
-
-// Address represents an address in JSONPlaceholder API
-type Address struct {
-	Street  string `json:"street"`
-	Suite   string `json:"suite"`
-	City    string `json:"city"`
-	Zipcode string `json:"zipcode"`
-	Geo     Geo    `json:"geo"`
-}
-
-// Company represents a company in JSONPlaceholder API
-type Company struct {
-	Name        string `json:"name"`
-	CatchPhrase string `json:"catchPhrase"`
-	Bs          string `json:"bs"`
-}
-
-// ExternalUser represents a user from the JSONPlaceholder API
-type ExternalUser struct {
-	ID       int     `json:"id"`
-	Name     string  `json:"name"`
-	Username string  `json:"username"`
-	Email    string  `json:"email"`
-	Phone    string  `json:"phone"`
-	Website  string  `json:"website"`
-	Address  Address `json:"address"`
-	Company  Company `json:"company"`
-}
+// Interface guard to ensure that UsersService implements the UsersServiceServer interface
+var _ service.UsersServiceServer = (*UsersService)(nil)
 
 // UsersService implements the gRPC service for user management
 type UsersService struct {
 	service.UnimplementedUsersServiceServer
-}
-
-// Mock user data store for demonstration purposes
-// In a production environment, this would be replaced with a proper database
-var mockUsers = map[string]*service.User{
-	"1": {Id: "1", Name: "Alice Johnson", Email: "alice@example.com", Role: service.UserRole_USER_ROLE_ADMIN, Permissions: []string{"read", "write"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"admin", "user"}}}},
-	"2": {Id: "2", Name: "Bob Smith", Email: "bob@example.com", Role: service.UserRole_USER_ROLE_USER, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}}},
-	"3": {Id: "3", Name: "Charlie Brown", Email: "charlie@example.com", Role: service.UserRole_USER_ROLE_USER, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"user"}}}},
-	"4": {Id: "4", Name: "Dana Lee", Email: "dana@example.com", Role: service.UserRole_USER_ROLE_GUEST, Permissions: []string{"read"}, Tags: &service.ListOfString{List: &service.ListOfString_List{Items: []string{"guest"}}}},
 }
 
 // LookupUserById implements the batch lookup functionality.
@@ -167,6 +127,37 @@ func (s *UsersService) MutationUpdateUser(ctx context.Context, req *service.Muta
 		user.Tags = &service.ListOfString{List: &service.ListOfString_List{Items: req.Input.Tags.GetList().GetItems()}}
 	}
 
+	// Update skill categories if provided
+	if len(req.Input.SkillCategories.GetList().GetItems()) > 0 {
+		user.SkillCategories = req.Input.SkillCategories
+	}
+
+	// Update bio if provided
+	if req.Input.Bio.GetValue() != "" {
+		user.Bio = req.Input.Bio
+	}
+
+	// Update age if provided
+	if req.Input.Age != nil {
+		user.Age = req.Input.Age
+	}
+
+	// Update profile if provided
+	if req.Input.Profile != nil {
+		if user.Profile == nil {
+			user.Profile = &service.Profile{}
+		}
+		if req.Input.Profile.DisplayName.GetValue() != "" {
+			user.Profile.DisplayName = req.Input.Profile.DisplayName
+		}
+		if req.Input.Profile.Timezone.GetValue() != "" {
+			user.Profile.Timezone = req.Input.Profile.Timezone
+		}
+		if req.Input.Profile.Theme != service.Theme_THEME_UNSPECIFIED {
+			user.Profile.Theme = req.Input.Profile.Theme
+		}
+	}
+
 	// Update the user in our mock database
 	mockUsers[req.Input.Id] = user
 
@@ -217,6 +208,37 @@ func (s *UsersService) MutationUpdateUsers(ctx context.Context, req *service.Mut
 
 		if len(input.Tags.GetList().GetItems()) > 0 {
 			user.Tags = &service.ListOfString{List: &service.ListOfString_List{Items: input.Tags.GetList().GetItems()}}
+		}
+
+		// Update skill categories if provided
+		if len(input.SkillCategories.GetList().GetItems()) > 0 {
+			user.SkillCategories = input.SkillCategories
+		}
+
+		// Update bio if provided
+		if input.Bio.GetValue() != "" {
+			user.Bio = input.Bio
+		}
+
+		// Update age if provided
+		if input.Age != nil {
+			user.Age = input.Age
+		}
+
+		// Update profile if provided
+		if input.Profile != nil {
+			if user.Profile == nil {
+				user.Profile = &service.Profile{}
+			}
+			if input.Profile.DisplayName.GetValue() != "" {
+				user.Profile.DisplayName = input.Profile.DisplayName
+			}
+			if input.Profile.Timezone.GetValue() != "" {
+				user.Profile.Timezone = input.Profile.Timezone
+			}
+			if input.Profile.Theme != service.Theme_THEME_UNSPECIFIED {
+				user.Profile.Theme = input.Profile.Theme
+			}
 		}
 
 		// Update the user in our mock database
@@ -326,5 +348,70 @@ func (s *UsersService) QueryExternalUser(ctx context.Context, req *service.Query
 	// Set the external user in the response
 	response.ExternalUser = serviceExternalUser
 
+	return response, nil
+}
+
+// QueryUserActivity returns recent activity items for a user
+func (s *UsersService) QueryUserActivity(ctx context.Context, req *service.QueryUserActivityRequest) (*service.QueryUserActivityResponse, error) {
+	response := &service.QueryUserActivityResponse{}
+
+	// Get activities for the user from our mock data
+	activities, found := userActivityMap[req.UserId]
+	if !found {
+		// Return empty list if user not found
+		response.UserActivity = []*service.ActivityItem{}
+		return response, nil
+	}
+
+	// Apply limit if specified
+	limit := int(req.Limit.GetValue())
+	if limit == 0 || limit > len(activities) {
+		limit = len(activities)
+	}
+
+	// Return the requested activities
+	response.UserActivity = activities[:limit]
+	return response, nil
+}
+
+// MutationCreatePost creates a new post and associates it with the author
+func (s *UsersService) MutationCreatePost(ctx context.Context, req *service.MutationCreatePostRequest) (*service.MutationCreatePostResponse, error) {
+	response := &service.MutationCreatePostResponse{}
+
+	// Check if the author exists
+	author, found := mockUsers[req.Input.AuthorId]
+	if !found {
+		return nil, fmt.Errorf("author with ID %s not found", req.Input.AuthorId)
+	}
+
+	// Generate a simple ID (in production, this would be from a database)
+	newID := fmt.Sprintf("%d", len(mockPosts)+1)
+
+	// Create the new post
+	newPost := &service.Post{
+		Id:       newID,
+		Title:    req.Input.Title,
+		AuthorId: req.Input.AuthorId,
+	}
+
+	// Add to our mock data
+	mockPosts[newID] = newPost
+
+	// Create an activity item for the new post
+	newActivity := &service.ActivityItem{
+		Value: &service.ActivityItem_Post{Post: newPost},
+	}
+
+	// Add to the author's recent activity (prepend to show most recent first)
+	author.RecentActivity = append([]*service.ActivityItem{newActivity}, author.RecentActivity...)
+
+	// Update the userActivityMap as well
+	userActivityMap[req.Input.AuthorId] = author.RecentActivity
+
+	// Update the user in our mock database
+	mockUsers[req.Input.AuthorId] = author
+
+	// Return the created post
+	response.CreatePost = newPost
 	return response, nil
 }
