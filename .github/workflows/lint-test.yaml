@@ -16,6 +16,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Generate code
+        working-directory: ./cosmo-router/plugins/users
+        run: npm run generate
 
       - uses: ./.github/actions/go
         with:
@@ -27,15 +36,7 @@ jobs:
       - uses: ./.github/actions/go-mod-tidy
         with:
           working-directory: ./cosmo-router/plugins/users/
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm install
-      - name: Generate code
-        working-directory: ./cosmo-router/plugins/users
-        run: npm run generate
+
 
       - name: Lint
         uses: ./.github/actions/go-linter
