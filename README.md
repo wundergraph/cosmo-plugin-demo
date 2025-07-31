@@ -15,6 +15,8 @@
 
 ---
 
+[![Lint and Test](https://github.com/wundergraph/cosmo-plugin-demo/actions/workflows/lint-test.yaml/badge.svg)](https://github.com/wundergraph/cosmo-plugin-demo/actions/workflows/lint-test.yaml)
+
 ## ✨ Features
 
 - **Schema-First GraphQL**: Define your data contract in SDL and generate type-safe gRPC resolvers instantly
