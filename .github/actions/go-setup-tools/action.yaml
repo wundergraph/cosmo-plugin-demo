@@ -5,10 +5,13 @@ description: This action installs the tools needed for the go project
 runs:
   using: composite
   steps:
-    - name: Install gotestsum
+    - name: Install tools
       shell: bash
       run: |
         go install gotest.tools/gotestsum@v1.12.2
+        go install github.com/bufbuild/buf/cmd/buf@v1.32.2
+        go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.34.2
+        go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@1.5.1
 
 
 
