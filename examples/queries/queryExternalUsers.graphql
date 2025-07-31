@@ -1,4 +1,4 @@
-query {
+query ExternalUsers {
   externalUsers {
     id
     name

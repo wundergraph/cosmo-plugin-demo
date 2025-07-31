@@ -72,7 +72,7 @@ func setupTestService(t *testing.T) *testService {
 	// Start the server
 	go func() {
 		if err := grpcServer.Serve(lis); err != nil {
-			t.Fatalf("failed to serve: %v", err)
+			t.Errorf("failed to serve: %v", err)
 		}
 	}()
 
@@ -534,10 +534,25 @@ func TestMutationUpdateUser(t *testing.T) {
 	svc := setupTestService(t)
 	defer svc.cleanup()
 
+	mu := mockUsers["1"]
+
 	// Store original user data to restore after test
-	origUser := *mockUsers["1"]
+	origUser := &service.User{
+		Id:              mu.Id,
+		Name:            mu.Name,
+		Email:           mu.Email,
+		Role:            mu.Role,
+		Permissions:     mu.Permissions,
+		Tags:            mu.Tags,
+		SkillCategories: mu.SkillCategories,
+		RecentActivity:  mu.RecentActivity,
+		Profile:         mu.Profile,
+		Bio:             mu.Bio,
+		Age:             mu.Age,
+	}
+
 	defer func() {
-		mockUsers["1"] = &origUser
+		mockUsers["1"] = origUser
 	}()
 
 	tests := []struct {
@@ -727,8 +742,20 @@ func TestMutationUpdateUsers(t *testing.T) {
 	// Store original user data to restore after test
 	origUsers := make(map[string]*service.User)
 	for id, user := range mockUsers {
-		userCopy := *user
-		origUsers[id] = &userCopy
+		userCopy := &service.User{
+			Id:              user.Id,
+			Name:            user.Name,
+			Email:           user.Email,
+			Role:            user.Role,
+			Permissions:     user.Permissions,
+			Tags:            user.Tags,
+			SkillCategories: user.SkillCategories,
+			RecentActivity:  user.RecentActivity,
+			Profile:         user.Profile,
+			Bio:             user.Bio,
+			Age:             user.Age,
+		}
+		origUsers[id] = userCopy
 	}
 	defer func() {
 		for id, user := range origUsers {
