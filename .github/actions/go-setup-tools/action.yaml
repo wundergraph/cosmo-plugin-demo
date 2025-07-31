@@ -1,0 +1,14 @@
+---
+name: go-setup-tools
+description: This action installs the tools needed for the go project
+
+runs:
+  using: composite
+  steps:
+    - name: Install gotestsum
+      shell: bash
+      run: |
+        go install gotest.tools/gotestsum@v1.12.2
+
+
+
