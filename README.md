@@ -26,15 +26,44 @@
 
 ## 🚀 Demo
 
+```mermaid
+graph LR
+  client["Clients (Web / Mobile / Server)"] --> routerCore["Router Core"]
+
+      subgraph routerBox["Cosmo Router"]
+      routerCore
+      plugin["(Router Plugin)<br/><br/>✓ Users Service<br/>Implementation"]
+      routerCore -->|gRPC| plugin
+    end
+
+  routerCore -->|HTTP| subA["Products Subgraph<br/>(Standalone GraphQL)"]
+
+  plugin -->|HTTP| restA["External REST API"]
+
+  %% Styling
+  classDef pluginFill fill:#4a7c59,stroke:#2d5a3d,stroke-width:2px,color:#ffffff;
+  classDef restFill fill:#c19a6b,stroke:#a0804f,stroke-width:1.5px,color:#ffffff;
+  classDef routerFill fill:#5a8ea2,stroke:#3d6e80,stroke-width:1.5px,color:#ffffff;
+  classDef subgraphFill fill:#8b6f47,stroke:#6d5637,stroke-width:1.5px,color:#ffffff;
+  classDef clientFill fill:#e8dcc6,stroke:#d4c4a8,stroke-width:1.5px,color:#2d3436;
+  class plugin pluginFill;
+  class restA restFill;
+  class routerCore routerFill;
+  class subA subgraphFill;
+  class client clientFill;
+```
+
 This demo showcases a federated GraphQL architecture with two different implementation approaches:
 
-- **[gRPC Users Subgraph](cosmo-router/plugins/users)**: Implemented as a Go-based gRPC Router plugin running directly inside the Cosmo Router - no separate service needed
+- **[Users Subgraph](cosmo-router/plugins/users)**: Implemented as a Go-based Router plugin (Cosmo Connect) running directly inside the Cosmo Router - no separate service needed
 - **[Products Subgraph](subgraphs/products)**: Traditional standalone GraphQL server using Apollo Server (running on port 3011)
 - **[Cosmo Router](cosmo-router)**: Composes both subgraphs into a unified GraphQL API (running on port 3010)
 
-The architecture demonstrates how the gRPC plugin enables both:
-- Embedded subgraphs (Users) with direct router integration for improved performance
-- Connecting a REST API to the graph through a gRPC plugin WunderGraph SDK
+The architecture demonstrates how Router plugins enable:
+
+- Direct integration with external services (REST APIs, databases, gRPC services) through the plugin layer
+- Embedded subgraphs with optimal performance by running inside the router process
+- Seamless bridging between GraphQL and any backend protocol
 - Traditional standalone subgraphs (Products) for compatibility with existing systems
 
 ## 🛠️ Getting Started
@@ -48,17 +77,20 @@ The architecture demonstrates how the gRPC plugin enables both:
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/wundergraph/cosmo-plugin-demo.git
    cd cosmo-plugin-demo
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Build the plugin, start the router and the subgraphs:
+
    ```bash
    npm start
    ```
