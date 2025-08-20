@@ -1,0 +1,519 @@
+{
+  "version": 1,
+  "service": "UsersService",
+  "operationMappings": [
+    {
+      "type": "OPERATION_TYPE_QUERY",
+      "original": "users",
+      "mapped": "QueryUsers",
+      "request": "QueryUsersRequest",
+      "response": "QueryUsersResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_QUERY",
+      "original": "user",
+      "mapped": "QueryUser",
+      "request": "QueryUserRequest",
+      "response": "QueryUserResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_QUERY",
+      "original": "externalUsers",
+      "mapped": "QueryExternalUsers",
+      "request": "QueryExternalUsersRequest",
+      "response": "QueryExternalUsersResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_QUERY",
+      "original": "externalUser",
+      "mapped": "QueryExternalUser",
+      "request": "QueryExternalUserRequest",
+      "response": "QueryExternalUserResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_QUERY",
+      "original": "userActivity",
+      "mapped": "QueryUserActivity",
+      "request": "QueryUserActivityRequest",
+      "response": "QueryUserActivityResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_MUTATION",
+      "original": "updateUser",
+      "mapped": "MutationUpdateUser",
+      "request": "MutationUpdateUserRequest",
+      "response": "MutationUpdateUserResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_MUTATION",
+      "original": "updateUsers",
+      "mapped": "MutationUpdateUsers",
+      "request": "MutationUpdateUsersRequest",
+      "response": "MutationUpdateUsersResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_MUTATION",
+      "original": "createPost",
+      "mapped": "MutationCreatePost",
+      "request": "MutationCreatePostRequest",
+      "response": "MutationCreatePostResponse"
+    }
+  ],
+  "entityMappings": [
+    {
+      "typeName": "User",
+      "kind": "entity",
+      "key": "id",
+      "rpc": "LookupUserById",
+      "request": "LookupUserByIdRequest",
+      "response": "LookupUserByIdResponse"
+    }
+  ],
+  "typeFieldMappings": [
+    {
+      "type": "Query",
+      "fieldMappings": [
+        {
+          "original": "users",
+          "mapped": "users",
+          "argumentMappings": []
+        },
+        {
+          "original": "user",
+          "mapped": "user",
+          "argumentMappings": [
+            {
+              "original": "id",
+              "mapped": "id"
+            }
+          ]
+        },
+        {
+          "original": "externalUsers",
+          "mapped": "external_users",
+          "argumentMappings": []
+        },
+        {
+          "original": "externalUser",
+          "mapped": "external_user",
+          "argumentMappings": [
+            {
+              "original": "id",
+              "mapped": "id"
+            }
+          ]
+        },
+        {
+          "original": "userActivity",
+          "mapped": "user_activity",
+          "argumentMappings": [
+            {
+              "original": "userId",
+              "mapped": "user_id"
+            },
+            {
+              "original": "limit",
+              "mapped": "limit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Mutation",
+      "fieldMappings": [
+        {
+          "original": "updateUser",
+          "mapped": "update_user",
+          "argumentMappings": [
+            {
+              "original": "input",
+              "mapped": "input"
+            }
+          ]
+        },
+        {
+          "original": "updateUsers",
+          "mapped": "update_users",
+          "argumentMappings": [
+            {
+              "original": "input",
+              "mapped": "input"
+            }
+          ]
+        },
+        {
+          "original": "createPost",
+          "mapped": "create_post",
+          "argumentMappings": [
+            {
+              "original": "input",
+              "mapped": "input"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "User",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "name",
+          "mapped": "name",
+          "argumentMappings": []
+        },
+        {
+          "original": "email",
+          "mapped": "email",
+          "argumentMappings": []
+        },
+        {
+          "original": "role",
+          "mapped": "role",
+          "argumentMappings": []
+        },
+        {
+          "original": "permissions",
+          "mapped": "permissions",
+          "argumentMappings": []
+        },
+        {
+          "original": "tags",
+          "mapped": "tags",
+          "argumentMappings": []
+        },
+        {
+          "original": "skillCategories",
+          "mapped": "skill_categories",
+          "argumentMappings": []
+        },
+        {
+          "original": "recentActivity",
+          "mapped": "recent_activity",
+          "argumentMappings": []
+        },
+        {
+          "original": "profile",
+          "mapped": "profile",
+          "argumentMappings": []
+        },
+        {
+          "original": "bio",
+          "mapped": "bio",
+          "argumentMappings": []
+        },
+        {
+          "original": "age",
+          "mapped": "age",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Profile",
+      "fieldMappings": [
+        {
+          "original": "displayName",
+          "mapped": "display_name",
+          "argumentMappings": []
+        },
+        {
+          "original": "timezone",
+          "mapped": "timezone",
+          "argumentMappings": []
+        },
+        {
+          "original": "theme",
+          "mapped": "theme",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Post",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "title",
+          "mapped": "title",
+          "argumentMappings": []
+        },
+        {
+          "original": "authorId",
+          "mapped": "author_id",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Comment",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "content",
+          "mapped": "content",
+          "argumentMappings": []
+        },
+        {
+          "original": "authorId",
+          "mapped": "author_id",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "ExternalUser",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "name",
+          "mapped": "name",
+          "argumentMappings": []
+        },
+        {
+          "original": "email",
+          "mapped": "email",
+          "argumentMappings": []
+        },
+        {
+          "original": "username",
+          "mapped": "username",
+          "argumentMappings": []
+        },
+        {
+          "original": "phone",
+          "mapped": "phone",
+          "argumentMappings": []
+        },
+        {
+          "original": "website",
+          "mapped": "website",
+          "argumentMappings": []
+        },
+        {
+          "original": "company",
+          "mapped": "company",
+          "argumentMappings": []
+        },
+        {
+          "original": "address",
+          "mapped": "address",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Company",
+      "fieldMappings": [
+        {
+          "original": "name",
+          "mapped": "name",
+          "argumentMappings": []
+        },
+        {
+          "original": "catchPhrase",
+          "mapped": "catch_phrase",
+          "argumentMappings": []
+        },
+        {
+          "original": "bs",
+          "mapped": "bs",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Address",
+      "fieldMappings": [
+        {
+          "original": "street",
+          "mapped": "street",
+          "argumentMappings": []
+        },
+        {
+          "original": "suite",
+          "mapped": "suite",
+          "argumentMappings": []
+        },
+        {
+          "original": "city",
+          "mapped": "city",
+          "argumentMappings": []
+        },
+        {
+          "original": "zipcode",
+          "mapped": "zipcode",
+          "argumentMappings": []
+        },
+        {
+          "original": "geo",
+          "mapped": "geo",
+          "argumentMappings": []
+        },
+        {
+          "original": "test",
+          "mapped": "test",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Geo",
+      "fieldMappings": [
+        {
+          "original": "lat",
+          "mapped": "lat",
+          "argumentMappings": []
+        },
+        {
+          "original": "lng",
+          "mapped": "lng",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "UserInput",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "name",
+          "mapped": "name",
+          "argumentMappings": []
+        },
+        {
+          "original": "email",
+          "mapped": "email",
+          "argumentMappings": []
+        },
+        {
+          "original": "role",
+          "mapped": "role",
+          "argumentMappings": []
+        },
+        {
+          "original": "permissions",
+          "mapped": "permissions",
+          "argumentMappings": []
+        },
+        {
+          "original": "tags",
+          "mapped": "tags",
+          "argumentMappings": []
+        },
+        {
+          "original": "skillCategories",
+          "mapped": "skill_categories",
+          "argumentMappings": []
+        },
+        {
+          "original": "bio",
+          "mapped": "bio",
+          "argumentMappings": []
+        },
+        {
+          "original": "age",
+          "mapped": "age",
+          "argumentMappings": []
+        },
+        {
+          "original": "profile",
+          "mapped": "profile",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "ProfileInput",
+      "fieldMappings": [
+        {
+          "original": "displayName",
+          "mapped": "display_name",
+          "argumentMappings": []
+        },
+        {
+          "original": "timezone",
+          "mapped": "timezone",
+          "argumentMappings": []
+        },
+        {
+          "original": "theme",
+          "mapped": "theme",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "PostInput",
+      "fieldMappings": [
+        {
+          "original": "title",
+          "mapped": "title",
+          "argumentMappings": []
+        },
+        {
+          "original": "authorId",
+          "mapped": "author_id",
+          "argumentMappings": []
+        }
+      ]
+    }
+  ],
+  "enumMappings": [
+    {
+      "type": "Theme",
+      "values": [
+        {
+          "original": "LIGHT",
+          "mapped": "THEME_LIGHT"
+        },
+        {
+          "original": "DARK",
+          "mapped": "THEME_DARK"
+        },
+        {
+          "original": "AUTO",
+          "mapped": "THEME_AUTO"
+        }
+      ]
+    },
+    {
+      "type": "UserRole",
+      "values": [
+        {
+          "original": "ADMIN",
+          "mapped": "USER_ROLE_ADMIN"
+        },
+        {
+          "original": "USER",
+          "mapped": "USER_ROLE_USER"
+        },
+        {
+          "original": "GUEST",
+          "mapped": "USER_ROLE_GUEST"
+        }
+      ]
+    }
+  ]
+}

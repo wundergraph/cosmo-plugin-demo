@@ -1,0 +1,271 @@
+{
+  "version": "1.0.0",
+  "messages": {
+    "LookupUserByIdRequestKey": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "LookupUserByIdRequest": {
+      "fields": {
+        "keys": 1
+      }
+    },
+    "LookupUserByIdResponse": {
+      "fields": {
+        "result": 1
+      }
+    },
+    "Query": {
+      "fields": {
+        "users": 1,
+        "user": 2,
+        "externalUsers": 3,
+        "externalUser": 4,
+        "userActivity": 5
+      }
+    },
+    "QueryUsersRequest": {
+      "fields": {}
+    },
+    "QueryUsersResponse": {
+      "fields": {
+        "users": 1
+      }
+    },
+    "QueryUserRequest": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "QueryUser": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "QueryUserResponse": {
+      "fields": {
+        "user": 1
+      }
+    },
+    "QueryExternalUsersRequest": {
+      "fields": {}
+    },
+    "QueryExternalUsersResponse": {
+      "fields": {
+        "external_users": 1
+      }
+    },
+    "QueryExternalUserRequest": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "QueryExternalUser": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "QueryExternalUserResponse": {
+      "fields": {
+        "external_user": 1
+      }
+    },
+    "QueryUserActivityRequest": {
+      "fields": {
+        "user_id": 1,
+        "limit": 2
+      }
+    },
+    "QueryUserActivity": {
+      "fields": {
+        "userId": 1,
+        "limit": 2
+      }
+    },
+    "QueryUserActivityResponse": {
+      "fields": {
+        "user_activity": 1
+      }
+    },
+    "Mutation": {
+      "fields": {
+        "updateUser": 1,
+        "updateUsers": 2,
+        "createPost": 3
+      }
+    },
+    "MutationUpdateUserRequest": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationUpdateUser": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationUpdateUserResponse": {
+      "fields": {
+        "update_user": 1
+      }
+    },
+    "MutationUpdateUsersRequest": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationUpdateUsers": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationUpdateUsersResponse": {
+      "fields": {
+        "update_users": 1
+      }
+    },
+    "MutationCreatePostRequest": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationCreatePost": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationCreatePostResponse": {
+      "fields": {
+        "create_post": 1
+      }
+    },
+    "User": {
+      "fields": {
+        "id": 1,
+        "name": 2,
+        "email": 3,
+        "role": 4,
+        "permissions": 5,
+        "tags": 6,
+        "skillCategories": 7,
+        "recentActivity": 8,
+        "profile": 9,
+        "bio": 10,
+        "age": 11
+      }
+    },
+    "ExternalUser": {
+      "fields": {
+        "id": 1,
+        "name": 2,
+        "email": 3,
+        "username": 4,
+        "phone": 5,
+        "website": 6,
+        "company": 7,
+        "address": 8
+      }
+    },
+    "ActivityItemMembers": {
+      "fields": {
+        "Post": 1,
+        "Comment": 2
+      }
+    },
+    "UserInput": {
+      "fields": {
+        "id": 1,
+        "name": 2,
+        "email": 3,
+        "role": 4,
+        "permissions": 5,
+        "tags": 6,
+        "skillCategories": 7,
+        "bio": 8,
+        "age": 9,
+        "profile": 10
+      }
+    },
+    "PostInput": {
+      "fields": {
+        "title": 1,
+        "authorId": 2
+      }
+    },
+    "Post": {
+      "fields": {
+        "id": 1,
+        "title": 2,
+        "authorId": 3
+      }
+    },
+    "NodeImplementations": {
+      "fields": {
+        "User": 1,
+        "Post": 2,
+        "Comment": 3
+      }
+    },
+    "Profile": {
+      "fields": {
+        "displayName": 1,
+        "timezone": 2,
+        "theme": 3
+      }
+    },
+    "Comment": {
+      "fields": {
+        "id": 1,
+        "content": 2,
+        "authorId": 3
+      }
+    },
+    "Company": {
+      "fields": {
+        "name": 1,
+        "catchPhrase": 2,
+        "bs": 3
+      }
+    },
+    "Address": {
+      "fields": {
+        "street": 1,
+        "suite": 2,
+        "city": 3,
+        "zipcode": 4,
+        "geo": 5,
+        "test": 6
+      }
+    },
+    "Geo": {
+      "fields": {
+        "lat": 1,
+        "lng": 2
+      }
+    },
+    "ProfileInput": {
+      "fields": {
+        "displayName": 1,
+        "timezone": 2,
+        "theme": 3
+      }
+    }
+  },
+  "enums": {
+    "Theme": {
+      "fields": {
+        "LIGHT": 1,
+        "DARK": 2,
+        "AUTO": 3
+      }
+    },
+    "UserRole": {
+      "fields": {
+        "ADMIN": 1,
+        "USER": 2,
+        "GUEST": 3
+      }
+    }
+  }
+}

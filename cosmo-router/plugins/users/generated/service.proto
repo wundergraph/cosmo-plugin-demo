@@ -1,0 +1,296 @@
+syntax = "proto3";
+package service;
+
+option go_package = "github.com/wundergraph/cosmo/plugin";
+
+import "google/protobuf/wrappers.proto";
+
+// Service definition for UsersService
+service UsersService {
+  // Lookup User entity by id
+  rpc LookupUserById(LookupUserByIdRequest) returns (LookupUserByIdResponse) {}
+  // Creates a new post
+  rpc MutationCreatePost(MutationCreatePostRequest) returns (MutationCreatePostResponse) {}
+  // Updates a single user's information
+  rpc MutationUpdateUser(MutationUpdateUserRequest) returns (MutationUpdateUserResponse) {}
+  // Updates multiple users' information in a single operation
+  rpc MutationUpdateUsers(MutationUpdateUsersRequest) returns (MutationUpdateUsersResponse) {}
+  // Returns a single external user by ID
+  rpc QueryExternalUser(QueryExternalUserRequest) returns (QueryExternalUserResponse) {}
+  // Returns a list of all external users
+  rpc QueryExternalUsers(QueryExternalUsersRequest) returns (QueryExternalUsersResponse) {}
+  // Returns a single internal user by ID
+  rpc QueryUser(QueryUserRequest) returns (QueryUserResponse) {}
+  // Returns recent activity items for a user
+  rpc QueryUserActivity(QueryUserActivityRequest) returns (QueryUserActivityResponse) {}
+  // Returns a list of all internal users
+  rpc QueryUsers(QueryUsersRequest) returns (QueryUsersResponse) {}
+}
+
+// Wrapper message for a list of String.
+message ListOfListOfString {
+  message List {
+    repeated ListOfString items = 1;
+  }
+  List list = 1;
+}
+// Wrapper message for a list of String.
+message ListOfString {
+  message List {
+    repeated string items = 1;
+  }
+  List list = 1;
+}
+// Key message for User entity lookup
+message LookupUserByIdRequestKey {
+  // Key field for User entity lookup.
+  string id = 1;
+}
+
+// Request message for User entity lookup.
+message LookupUserByIdRequest {
+  /*
+   * List of keys to look up User entities.
+   * Order matters - each key maps to one entity in LookupUserByIdResponse.
+   */
+  repeated LookupUserByIdRequestKey keys = 1;
+}
+
+// Response message for User entity lookup.
+message LookupUserByIdResponse {
+  /*
+   * List of User entities in the same order as the keys in LookupUserByIdRequest.
+   * Always return the same number of entities as keys. Use null for entities that cannot be found.
+   * 
+   * Example:
+   *   LookupUserByIdRequest:
+   *     keys:
+   *       - id: 1
+   *       - id: 2
+   *   LookupUserByIdResponse:
+   *     result:
+   *       - id: 1 # User with id 1 found
+   *       - null  # User with id 2 not found
+   */
+  repeated User result = 1;
+}
+
+// Request message for users operation: Returns a list of all internal users.
+message QueryUsersRequest {
+}
+// Response message for users operation: Returns a list of all internal users.
+message QueryUsersResponse {
+  // Returns a list of all internal users
+  repeated User users = 1;
+}
+// Request message for user operation: Returns a single internal user by ID.
+message QueryUserRequest {
+  string id = 1;
+}
+// Response message for user operation: Returns a single internal user by ID.
+message QueryUserResponse {
+  // Returns a single internal user by ID
+  User user = 1;
+}
+// Request message for externalUsers operation: Returns a list of all external users.
+message QueryExternalUsersRequest {
+}
+// Response message for externalUsers operation: Returns a list of all external users.
+message QueryExternalUsersResponse {
+  // Returns a list of all external users
+  repeated ExternalUser external_users = 1;
+}
+// Request message for externalUser operation: Returns a single external user by ID.
+message QueryExternalUserRequest {
+  string id = 1;
+}
+// Response message for externalUser operation: Returns a single external user by ID.
+message QueryExternalUserResponse {
+  // Returns a single external user by ID
+  ExternalUser external_user = 1;
+}
+// Request message for userActivity operation: Returns recent activity items for a user.
+message QueryUserActivityRequest {
+  string user_id = 1;
+  google.protobuf.Int32Value limit = 2;
+}
+// Response message for userActivity operation: Returns recent activity items for a user.
+message QueryUserActivityResponse {
+  // Returns recent activity items for a user
+  repeated ActivityItem user_activity = 1;
+}
+// Request message for updateUser operation: Updates a single user's information.
+message MutationUpdateUserRequest {
+  UserInput input = 1;
+}
+// Response message for updateUser operation: Updates a single user's information.
+message MutationUpdateUserResponse {
+  // Updates a single user's information
+  User update_user = 1;
+}
+// Request message for updateUsers operation: Updates multiple users' information in a single operation.
+message MutationUpdateUsersRequest {
+  repeated UserInput input = 1;
+}
+// Response message for updateUsers operation: Updates multiple users' information in a single operation.
+message MutationUpdateUsersResponse {
+  // Updates multiple users' information in a single operation
+  repeated User update_users = 1;
+}
+// Request message for createPost operation: Creates a new post.
+message MutationCreatePostRequest {
+  PostInput input = 1;
+}
+// Response message for createPost operation: Creates a new post.
+message MutationCreatePostResponse {
+  // Creates a new post
+  Post create_post = 1;
+}
+
+message User {
+  // The unique identifier for the user
+  string id = 1;
+  // The user's name
+  string name = 2;
+  // The user's email address
+  string email = 3;
+  // The user's role in the system
+  UserRole role = 4;
+  // List of permissions granted to the user (always present, may be empty)
+  repeated string permissions = 5;
+  // Optional list of tags associated with the user for categorization
+  ListOfString tags = 6;
+  // Nested list: Skills organized by categories (e.g. [["JavaScript", "TypeScript"], ["React", "Vue"]])
+  ListOfListOfString skill_categories = 7;
+  // Union type: Recent user activities
+  repeated ActivityItem recent_activity = 8;
+  // Nullable complex type: User profile information
+  Profile profile = 9;
+  // Nullable string: User biography
+  google.protobuf.StringValue bio = 10;
+  // Nullable integer: User age
+  google.protobuf.Int32Value age = 11;
+}
+
+message ExternalUser {
+  string id = 1;
+  string name = 2;
+  string email = 3;
+  string username = 4;
+  google.protobuf.StringValue phone = 5;
+  google.protobuf.StringValue website = 6;
+  Company company = 7;
+  Address address = 8;
+}
+
+// Union type representing different types of user activities
+message ActivityItem {
+  oneof value {
+  // A simple post by a user
+  Post post = 1;
+  // A comment by a user
+  Comment comment = 2;
+  }
+}
+
+message UserInput {
+  string id = 1;
+  google.protobuf.StringValue name = 2;
+  google.protobuf.StringValue email = 3;
+  UserRole role = 4;
+  ListOfString permissions = 5;
+  ListOfString tags = 6;
+  ListOfListOfString skill_categories = 7;
+  google.protobuf.StringValue bio = 8;
+  google.protobuf.Int32Value age = 9;
+  ProfileInput profile = 10;
+}
+
+// Input type for creating posts
+message PostInput {
+  string title = 1;
+  string author_id = 2;
+}
+
+// A simple post by a user
+message Post {
+  // The unique identifier for the post
+  string id = 1;
+  // Post title
+  string title = 2;
+  // Post author ID
+  string author_id = 3;
+}
+
+// Interface for entities with unique identifiers
+message Node {
+  oneof instance {
+  User user = 1;
+  // A simple post by a user
+  Post post = 2;
+  // A comment by a user
+  Comment comment = 3;
+  }
+}
+
+// User profile information (nullable complex type)
+message Profile {
+  // User's display name preference
+  google.protobuf.StringValue display_name = 1;
+  // User's timezone preference
+  google.protobuf.StringValue timezone = 2;
+  // Theme preference
+  Theme theme = 3;
+}
+
+// A comment by a user
+message Comment {
+  // The unique identifier for the comment
+  string id = 1;
+  // Comment content
+  string content = 2;
+  // Comment author ID
+  string author_id = 3;
+}
+
+// UI theme options
+enum Theme {
+  THEME_UNSPECIFIED = 0;
+  THEME_LIGHT = 1;
+  THEME_DARK = 2;
+  THEME_AUTO = 3;
+}
+
+message Company {
+  string name = 1;
+  google.protobuf.StringValue catch_phrase = 2;
+  google.protobuf.StringValue bs = 3;
+}
+
+message Address {
+  google.protobuf.StringValue street = 1;
+  google.protobuf.StringValue suite = 2;
+  google.protobuf.StringValue city = 3;
+  google.protobuf.StringValue zipcode = 4;
+  Geo geo = 5;
+  google.protobuf.StringValue test = 6;
+}
+
+message Geo {
+  google.protobuf.StringValue lat = 1;
+  google.protobuf.StringValue lng = 2;
+}
+
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0;
+  USER_ROLE_ADMIN = 1;
+  USER_ROLE_USER = 2;
+  USER_ROLE_GUEST = 3;
+}
+
+// Input type for user profile updates
+message ProfileInput {
+  google.protobuf.StringValue display_name = 1;
+  google.protobuf.StringValue timezone = 2;
+  Theme theme = 3;
+}

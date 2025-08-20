@@ -6,22 +6,22 @@ type Query {
   Returns a list of all internal users
   """
   users: [User!]!
-  
+
   """
   Returns a single internal user by ID
   """
   user(id: ID!): User
-  
+
   """
   Returns a list of all external users
   """
   externalUsers: [ExternalUser!]!
-  
+
   """
   Returns a single external user by ID
   """
   externalUser(id: ID!): ExternalUser
-  
+
   """
   Returns recent activity items for a user
   """
@@ -36,12 +36,12 @@ type Mutation {
   Updates a single user's information
   """
   updateUser(input: UserInput!): User
-  
+
   """
   Updates multiple users' information in a single operation
   """
   updateUsers(input: [UserInput!]!): [User!]!
-  
+
   """
   Creates a new post
   """
@@ -49,27 +49,49 @@ type Mutation {
 }
 
 type User implements Node @key(fields: "id") {
-  """ The unique identifier for the user """
+  """
+  The unique identifier for the user
+  """
   id: ID!
-  """ The user's name """
+  """
+  The user's name
+  """
   name: String!
-  """ The user's email address """
+  """
+  The user's email address
+  """
   email: String!
-  """ The user's role in the system """
+  """
+  The user's role in the system
+  """
   role: UserRole!
-  """ List of permissions granted to the user (always present, may be empty) """
+  """
+  List of permissions granted to the user (always present, may be empty)
+  """
   permissions: [String!]!
-  """ Optional list of tags associated with the user for categorization """
+  """
+  Optional list of tags associated with the user for categorization
+  """
   tags: [String!]
-  """ Nested list: Skills organized by categories (e.g. [["JavaScript", "TypeScript"], ["React", "Vue"]]) """
+  """
+  Nested list: Skills organized by categories (e.g. [["JavaScript", "TypeScript"], ["React", "Vue"]])
+  """
   skillCategories: [[String!]!]!
-  """ Union type: Recent user activities """
+  """
+  Union type: Recent user activities
+  """
   recentActivity: [ActivityItem!]!
-  """ Nullable complex type: User profile information """
+  """
+  Nullable complex type: User profile information
+  """
   profile: Profile
-  """ Nullable string: User biography """
+  """
+  Nullable string: User biography
+  """
   bio: String
-  """ Nullable integer: User age """
+  """
+  Nullable integer: User age
+  """
   age: Int
 }
 
@@ -77,7 +99,9 @@ type User implements Node @key(fields: "id") {
 Interface for entities with unique identifiers
 """
 interface Node {
-  """ The unique identifier """
+  """
+  The unique identifier
+  """
   id: ID!
 }
 
@@ -85,11 +109,17 @@ interface Node {
 User profile information (nullable complex type)
 """
 type Profile {
-  """ User's display name preference """
+  """
+  User's display name preference
+  """
   displayName: String
-  """ User's timezone preference """
+  """
+  User's timezone preference
+  """
   timezone: String
-  """ Theme preference """
+  """
+  Theme preference
+  """
   theme: Theme
 }
 
@@ -97,11 +127,17 @@ type Profile {
 A simple post by a user
 """
 type Post implements Node {
-  """ The unique identifier for the post """
+  """
+  The unique identifier for the post
+  """
   id: ID!
-  """ Post title """
+  """
+  Post title
+  """
   title: String!
-  """ Post author ID """
+  """
+  Post author ID
+  """
   authorId: ID!
 }
 
@@ -109,11 +145,17 @@ type Post implements Node {
 A comment by a user
 """
 type Comment implements Node {
-  """ The unique identifier for the comment """
+  """
+  The unique identifier for the comment
+  """
   id: ID!
-  """ Comment content """
+  """
+  Comment content
+  """
   content: String!
-  """ Comment author ID """
+  """
+  Comment author ID
+  """
   authorId: ID!
 }
 

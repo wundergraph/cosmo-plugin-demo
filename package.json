@@ -14,8 +14,7 @@
     "start": "npm run build && concurrently \"npm run start:products\" \"npm run start:router\"",
     "dev": "npm start",
     "install:all": "npm install",
-    "upgrade:deps": "npm upgrade --ws",
-    "list:workspaces": "npm query .workspace"
+    "upgrade:deps": "npm upgrade --ws"
   },
   "keywords": [
     "graphql",
