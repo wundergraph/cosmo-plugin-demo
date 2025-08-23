@@ -5,11 +5,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "compose": "npx wgc@latest router compose -i graph.yaml -o config.json",
-    "build": "npx wgc@latest router plugin build plugins/users --debug && npm run compose",
-    "test": "npx wgc@latest router plugin test plugins/users",
-    "generate": "npx wgc@latest router plugin build plugins/users --generate-only",
-    "postinstall": "rm -rf release && npx wgc@latest router download-binary -o release && chmod +x release/router",
+    "compose": "wgc router compose -i graph.yaml -o config.json",
+    "build": "wgc router plugin build plugins/users --debug && npm run compose",
+    "test": "wgc router plugin test plugins/users",
+    "generate": "wgc router plugin build plugins/users --generate-only",
+    "postinstall": "rm -rf release && wgc router download-binary -o release && chmod +x release/router",
     "start": "./release/router"
+  },
+  "dependencies": {
+    "wgc": "^0.90.4"
   }
-} 
+}
