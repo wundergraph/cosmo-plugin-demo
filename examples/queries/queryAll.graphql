@@ -1,0 +1,46 @@
+query QueryUser {
+  externalUsers {
+    id
+    name
+    email
+    username
+    phone
+    website
+    company {
+      catchPhrase
+      bs
+    }
+  }
+  user(id: 1) {
+    id
+    name
+    email
+    role
+    permissions
+    tags
+    skillCategories
+    products {
+      id
+      name
+    }
+    recentActivity {
+      ... on Post {
+        postId: id
+        title
+        authorId
+      }
+      ... on Comment {
+        commentId: id
+        content
+        authorId
+      }
+    }
+    profile {
+      displayName
+      timezone
+      theme
+    }
+    bio
+    age
+  }
+}
