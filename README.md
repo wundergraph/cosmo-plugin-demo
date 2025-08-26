@@ -30,9 +30,9 @@
 graph LR
   client["Clients (Web / Mobile / Server)"] --> routerCore["Router Core"]
 
-      subgraph routerBox["Cosmo Router"]
+      subgraph routerBox["Cosmo Router (API Gateway)"]
       routerCore
-      plugin["(Router Plugin)<br/><br/>✓ Users Service<br/>Implementation"]
+      plugin["✓ Users Service (Plugin)<br/>Implementation"]
       routerCore -->|gRPC| plugin
     end
 
