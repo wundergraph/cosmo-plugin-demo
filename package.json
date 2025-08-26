@@ -11,7 +11,7 @@
     "start:products": "npm run start -w products-subgraph",
     "start:router": "npm run start -w cosmo-router",
     "build": "npm run build -w cosmo-router && npm run test -w cosmo-router",
-    "start": "npm run build && concurrently \"npm run start:products\" \"npm run start:router\"",
+    "start": "npm run build && concurrently \"npm run start:products\" \"npm run start:router\" \"open http://localhost:3010\"",
     "dev": "npm start",
     "install:all": "npm install",
     "upgrade:deps": "npm upgrade --ws"
@@ -29,6 +29,7 @@
     "graphql-tag": "^2.12.6"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "open-cli": "^8.0.0"
   }
 }
