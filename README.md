@@ -36,7 +36,7 @@ graph LR
       routerCore -->|gRPC| plugin
     end
 
-  routerCore -->|HTTP| subA["Products Subgraph<br/>(Standalone GraphQL)"]
+  routerCore -->|HTTP| subA["Products Subgraph<br/>(GraphQL Server)"]
 
   plugin -->|HTTP| restA["External REST API"]
 
