@@ -1,0 +1,217 @@
+{
+  "version": 1,
+  "service": "CoursesService",
+  "operationMappings": [
+    {
+      "type": "OPERATION_TYPE_QUERY",
+      "original": "courses",
+      "mapped": "QueryCourses",
+      "request": "QueryCoursesRequest",
+      "response": "QueryCoursesResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_QUERY",
+      "original": "course",
+      "mapped": "QueryCourse",
+      "request": "QueryCourseRequest",
+      "response": "QueryCourseResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_MUTATION",
+      "original": "createCourse",
+      "mapped": "MutationCreateCourse",
+      "request": "MutationCreateCourseRequest",
+      "response": "MutationCreateCourseResponse"
+    },
+    {
+      "type": "OPERATION_TYPE_MUTATION",
+      "original": "enrollUser",
+      "mapped": "MutationEnrollUser",
+      "request": "MutationEnrollUserRequest",
+      "response": "MutationEnrollUserResponse"
+    }
+  ],
+  "entityMappings": [
+    {
+      "typeName": "User",
+      "kind": "entity",
+      "key": "id",
+      "rpc": "LookupUserById",
+      "request": "LookupUserByIdRequest",
+      "response": "LookupUserByIdResponse"
+    }
+  ],
+  "typeFieldMappings": [
+    {
+      "type": "Query",
+      "fieldMappings": [
+        {
+          "original": "courses",
+          "mapped": "courses",
+          "argumentMappings": []
+        },
+        {
+          "original": "course",
+          "mapped": "course",
+          "argumentMappings": [
+            {
+              "original": "id",
+              "mapped": "id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Mutation",
+      "fieldMappings": [
+        {
+          "original": "createCourse",
+          "mapped": "create_course",
+          "argumentMappings": [
+            {
+              "original": "input",
+              "mapped": "input"
+            }
+          ]
+        },
+        {
+          "original": "enrollUser",
+          "mapped": "enroll_user",
+          "argumentMappings": [
+            {
+              "original": "userId",
+              "mapped": "user_id"
+            },
+            {
+              "original": "courseId",
+              "mapped": "course_id"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "User",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "instructorCourses",
+          "mapped": "instructor_courses",
+          "argumentMappings": []
+        },
+        {
+          "original": "enrollments",
+          "mapped": "enrollments",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Course",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "title",
+          "mapped": "title",
+          "argumentMappings": []
+        },
+        {
+          "original": "description",
+          "mapped": "description",
+          "argumentMappings": []
+        },
+        {
+          "original": "instructor",
+          "mapped": "instructor",
+          "argumentMappings": []
+        },
+        {
+          "original": "durationHours",
+          "mapped": "duration_hours",
+          "argumentMappings": []
+        },
+        {
+          "original": "published",
+          "mapped": "published",
+          "argumentMappings": []
+        },
+        {
+          "original": "enrollments",
+          "mapped": "enrollments",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "Enrollment",
+      "fieldMappings": [
+        {
+          "original": "id",
+          "mapped": "id",
+          "argumentMappings": []
+        },
+        {
+          "original": "user",
+          "mapped": "user",
+          "argumentMappings": []
+        },
+        {
+          "original": "course",
+          "mapped": "course",
+          "argumentMappings": []
+        },
+        {
+          "original": "progress",
+          "mapped": "progress",
+          "argumentMappings": []
+        },
+        {
+          "original": "enrolledAt",
+          "mapped": "enrolled_at",
+          "argumentMappings": []
+        }
+      ]
+    },
+    {
+      "type": "CourseInput",
+      "fieldMappings": [
+        {
+          "original": "title",
+          "mapped": "title",
+          "argumentMappings": []
+        },
+        {
+          "original": "description",
+          "mapped": "description",
+          "argumentMappings": []
+        },
+        {
+          "original": "instructorId",
+          "mapped": "instructor_id",
+          "argumentMappings": []
+        },
+        {
+          "original": "durationHours",
+          "mapped": "duration_hours",
+          "argumentMappings": []
+        },
+        {
+          "original": "published",
+          "mapped": "published",
+          "argumentMappings": []
+        }
+      ]
+    }
+  ],
+  "enumMappings": [],
+  "resolveMappings": []
+}

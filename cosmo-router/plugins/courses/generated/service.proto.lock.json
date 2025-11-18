@@ -1,0 +1,148 @@
+{
+  "version": "1.0.0",
+  "messages": {
+    "Query": {
+      "fields": {
+        "courses": 2,
+        "course": 3
+      },
+      "reservedNumbers": [
+        1
+      ]
+    },
+    "QueryHelloRequest": {
+      "fields": {
+        "name": 1
+      }
+    },
+    "QueryHello": {
+      "fields": {
+        "name": 1
+      }
+    },
+    "QueryHelloResponse": {
+      "fields": {
+        "hello": 1
+      }
+    },
+    "World": {
+      "fields": {
+        "id": 1,
+        "name": 2
+      }
+    },
+    "LookupUserByIdRequestKey": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "LookupUserByIdRequest": {
+      "fields": {
+        "keys": 1
+      }
+    },
+    "LookupUserByIdResponse": {
+      "fields": {
+        "result": 1
+      }
+    },
+    "QueryCoursesRequest": {
+      "fields": {}
+    },
+    "QueryCoursesResponse": {
+      "fields": {
+        "courses": 1
+      }
+    },
+    "QueryCourseRequest": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "QueryCourse": {
+      "fields": {
+        "id": 1
+      }
+    },
+    "QueryCourseResponse": {
+      "fields": {
+        "course": 1
+      }
+    },
+    "Mutation": {
+      "fields": {
+        "createCourse": 1,
+        "enrollUser": 2
+      }
+    },
+    "MutationCreateCourseRequest": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationCreateCourse": {
+      "fields": {
+        "input": 1
+      }
+    },
+    "MutationCreateCourseResponse": {
+      "fields": {
+        "create_course": 1
+      }
+    },
+    "MutationEnrollUserRequest": {
+      "fields": {
+        "user_id": 1,
+        "course_id": 2
+      }
+    },
+    "MutationEnrollUser": {
+      "fields": {
+        "userId": 1,
+        "courseId": 2
+      }
+    },
+    "MutationEnrollUserResponse": {
+      "fields": {
+        "enroll_user": 1
+      }
+    },
+    "User": {
+      "fields": {
+        "id": 1,
+        "instructorCourses": 2,
+        "enrollments": 3
+      }
+    },
+    "Course": {
+      "fields": {
+        "id": 1,
+        "title": 2,
+        "description": 3,
+        "instructor": 4,
+        "durationHours": 5,
+        "published": 6,
+        "enrollments": 7
+      }
+    },
+    "CourseInput": {
+      "fields": {
+        "title": 1,
+        "description": 2,
+        "instructorId": 3,
+        "durationHours": 4,
+        "published": 5
+      }
+    },
+    "Enrollment": {
+      "fields": {
+        "id": 1,
+        "user": 2,
+        "course": 3,
+        "progress": 4,
+        "enrolledAt": 5
+      }
+    }
+  },
+  "enums": {}
+}

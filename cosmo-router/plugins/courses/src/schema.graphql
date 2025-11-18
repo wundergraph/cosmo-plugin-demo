@@ -1,0 +1,115 @@
+"""
+User type from users plugin (extended here)
+"""
+type User @key(fields: "id") {
+  id: ID!
+  """
+  Courses where this user is the instructor
+  """
+  instructorCourses: [Course!]!
+  """
+  User's course enrollments
+  """
+  enrollments: [Enrollment!]!
+}
+
+"""
+Root Query type providing access to course data
+"""
+type Query {
+  """
+  Returns a list of all courses
+  """
+  courses: [Course!]!
+
+  """
+  Returns a single course by ID
+  """
+  course(id: ID!): Course
+}
+
+"""
+Root Mutation type for modifying course data
+"""
+type Mutation {
+  """
+  Creates a new course
+  """
+  createCourse(input: CourseInput!): Course!
+
+  """
+  Enrolls a user in a course
+  """
+  enrollUser(userId: ID!, courseId: ID!): Enrollment!
+}
+
+"""
+Represents a course in the system
+"""
+type Course {
+  """
+  The unique identifier for the course
+  """
+  id: ID!
+  """
+  The course title
+  """
+  title: String!
+  """
+  Course description
+  """
+  description: String!
+  """
+  Course instructor (User from users plugin)
+  """
+  instructor: User!
+  """
+  Course duration in hours
+  """
+  durationHours: Int!
+  """
+  Whether the course is published
+  """
+  published: Boolean!
+  """
+  Students enrolled in this course
+  """
+  enrollments: [Enrollment!]!
+}
+
+"""
+Represents a user's enrollment in a course
+"""
+type Enrollment {
+  """
+  The unique identifier for the enrollment
+  """
+  id: ID!
+  """
+  The enrolled user (User from users plugin)
+  """
+  user: User!
+  """
+  The course
+  """
+  course: Course!
+  """
+  Completion percentage (0-100)
+  """
+  progress: Int!
+  """
+  When the user enrolled
+  """
+  enrolledAt: String!
+}
+
+"""
+Input for creating a course
+"""
+input CourseInput {
+  title: String!
+  description: String!
+  instructorId: ID!
+  durationHours: Int!
+  published: Boolean!
+}

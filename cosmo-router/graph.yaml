@@ -7,3 +7,6 @@ subgraphs:
   - plugin:
       version: 0.0.1
       path: plugins/users
+  - plugin:
+      version: 0.0.1
+      path: plugins/courses

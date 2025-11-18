@@ -1,0 +1,137 @@
+syntax = "proto3";
+package service;
+
+// Service definition for CoursesService
+service CoursesService {
+  // Lookup User entity by id: User type from users plugin (extended here)
+  rpc LookupUserById(LookupUserByIdRequest) returns (LookupUserByIdResponse) {}
+  // Creates a new course
+  rpc MutationCreateCourse(MutationCreateCourseRequest) returns (MutationCreateCourseResponse) {}
+  // Enrolls a user in a course
+  rpc MutationEnrollUser(MutationEnrollUserRequest) returns (MutationEnrollUserResponse) {}
+  // Returns a single course by ID
+  rpc QueryCourse(QueryCourseRequest) returns (QueryCourseResponse) {}
+  // Returns a list of all courses
+  rpc QueryCourses(QueryCoursesRequest) returns (QueryCoursesResponse) {}
+}
+
+// Key message for User entity lookup
+message LookupUserByIdRequestKey {
+  // Key field for User entity lookup.
+  string id = 1;
+}
+
+// Request message for User entity lookup.
+message LookupUserByIdRequest {
+  /*
+   * List of keys to look up User entities.
+   * Order matters - each key maps to one entity in LookupUserByIdResponse.
+   */
+  repeated LookupUserByIdRequestKey keys = 1;
+}
+
+// Response message for User entity lookup.
+message LookupUserByIdResponse {
+  /*
+   * List of User entities in the same order as the keys in LookupUserByIdRequest.
+   * Always return the same number of entities as keys. Use null for entities that cannot be found.
+   * 
+   * Example:
+   *   LookupUserByIdRequest:
+   *     keys:
+   *       - id: 1
+   *       - id: 2
+   *   LookupUserByIdResponse:
+   *     result:
+   *       - id: 1 # User with id 1 found
+   *       - null  # User with id 2 not found
+   */
+  repeated User result = 1;
+}
+
+// Request message for courses operation: Returns a list of all courses.
+message QueryCoursesRequest {
+}
+// Response message for courses operation: Returns a list of all courses.
+message QueryCoursesResponse {
+  // Returns a list of all courses
+  repeated Course courses = 1;
+}
+// Request message for course operation: Returns a single course by ID.
+message QueryCourseRequest {
+  string id = 1;
+}
+// Response message for course operation: Returns a single course by ID.
+message QueryCourseResponse {
+  // Returns a single course by ID
+  Course course = 1;
+}
+// Request message for createCourse operation: Creates a new course.
+message MutationCreateCourseRequest {
+  CourseInput input = 1;
+}
+// Response message for createCourse operation: Creates a new course.
+message MutationCreateCourseResponse {
+  // Creates a new course
+  Course create_course = 1;
+}
+// Request message for enrollUser operation: Enrolls a user in a course.
+message MutationEnrollUserRequest {
+  string user_id = 1;
+  string course_id = 2;
+}
+// Response message for enrollUser operation: Enrolls a user in a course.
+message MutationEnrollUserResponse {
+  // Enrolls a user in a course
+  Enrollment enroll_user = 1;
+}
+
+// User type from users plugin (extended here)
+message User {
+  string id = 1;
+  // Courses where this user is the instructor
+  repeated Course instructor_courses = 2;
+  // User's course enrollments
+  repeated Enrollment enrollments = 3;
+}
+
+// Represents a course in the system
+message Course {
+  // The unique identifier for the course
+  string id = 1;
+  // The course title
+  string title = 2;
+  // Course description
+  string description = 3;
+  // Course instructor (User from users plugin)
+  User instructor = 4;
+  // Course duration in hours
+  int32 duration_hours = 5;
+  // Whether the course is published
+  bool published = 6;
+  // Students enrolled in this course
+  repeated Enrollment enrollments = 7;
+}
+
+// Input for creating a course
+message CourseInput {
+  string title = 1;
+  string description = 2;
+  string instructor_id = 3;
+  int32 duration_hours = 4;
+  bool published = 5;
+}
+
+// Represents a user's enrollment in a course
+message Enrollment {
+  // The unique identifier for the enrollment
+  string id = 1;
+  // The enrolled user (User from users plugin)
+  User user = 2;
+  // The course
+  Course course = 3;
+  // Completion percentage (0-100)
+  int32 progress = 4;
+  // When the user enrolled
+  string enrolled_at = 5;
+}
