@@ -6,9 +6,19 @@
   "type": "module",
   "scripts": {
     "compose": "wgc router compose -i graph.yaml -o config.json",
-    "build": "wgc router plugin build plugins/users --debug && npm run compose",
-    "test": "wgc router plugin test plugins/users",
-    "generate": "wgc router plugin build plugins/users --generate-only",
+    
+    "build:users": "wgc router plugin build plugins/users --debug",
+    "build:courses": "wgc router plugin build plugins/courses --debug",
+    "build": "npm run build:users && npm run build:courses && npm run compose",
+
+    "test:users": "wgc router plugin test plugins/users",
+    "test:courses": "wgc router plugin test plugins/courses",
+    "test": "npm run test:users && npm run test:courses",
+
+    "generate:users": "wgc router plugin build plugins/users --generate-only",
+    "generate:courses": "wgc router plugin build plugins/courses --generate-only",
+    "generate": "npm run generate:users && npm run generate:courses",
+
     "postinstall": "rm -rf release && wgc router download-binary -o release && chmod +x release/router",
     "start": "./release/router"
   },
