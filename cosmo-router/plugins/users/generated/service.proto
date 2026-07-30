@@ -268,12 +268,12 @@ message Company {
 }
 
 message Address {
+  reserved 6;
   google.protobuf.StringValue street = 1;
   google.protobuf.StringValue suite = 2;
   google.protobuf.StringValue city = 3;
   google.protobuf.StringValue zipcode = 4;
   Geo geo = 5;
-  google.protobuf.StringValue test = 6;
 }
 
 message Geo {
