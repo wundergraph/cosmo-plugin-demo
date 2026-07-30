@@ -234,9 +234,11 @@
         "suite": 2,
         "city": 3,
         "zipcode": 4,
-        "geo": 5,
-        "test": 6
-      }
+        "geo": 5
+      },
+      "reservedNumbers": [
+        6
+      ]
     },
     "Geo": {
       "fields": {

@@ -75,8 +75,7 @@
       "fieldMappings": [
         {
           "original": "users",
-          "mapped": "users",
-          "argumentMappings": []
+          "mapped": "users"
         },
         {
           "original": "user",
@@ -90,8 +89,7 @@
         },
         {
           "original": "externalUsers",
-          "mapped": "external_users",
-          "argumentMappings": []
+          "mapped": "external_users"
         },
         {
           "original": "externalUser",
@@ -159,58 +157,47 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "name",
-          "mapped": "name",
-          "argumentMappings": []
+          "mapped": "name"
         },
         {
           "original": "email",
-          "mapped": "email",
-          "argumentMappings": []
+          "mapped": "email"
         },
         {
           "original": "role",
-          "mapped": "role",
-          "argumentMappings": []
+          "mapped": "role"
         },
         {
           "original": "permissions",
-          "mapped": "permissions",
-          "argumentMappings": []
+          "mapped": "permissions"
         },
         {
           "original": "tags",
-          "mapped": "tags",
-          "argumentMappings": []
+          "mapped": "tags"
         },
         {
           "original": "skillCategories",
-          "mapped": "skill_categories",
-          "argumentMappings": []
+          "mapped": "skill_categories"
         },
         {
           "original": "recentActivity",
-          "mapped": "recent_activity",
-          "argumentMappings": []
+          "mapped": "recent_activity"
         },
         {
           "original": "profile",
-          "mapped": "profile",
-          "argumentMappings": []
+          "mapped": "profile"
         },
         {
           "original": "bio",
-          "mapped": "bio",
-          "argumentMappings": []
+          "mapped": "bio"
         },
         {
           "original": "age",
-          "mapped": "age",
-          "argumentMappings": []
+          "mapped": "age"
         }
       ]
     },
@@ -219,18 +206,15 @@
       "fieldMappings": [
         {
           "original": "displayName",
-          "mapped": "display_name",
-          "argumentMappings": []
+          "mapped": "display_name"
         },
         {
           "original": "timezone",
-          "mapped": "timezone",
-          "argumentMappings": []
+          "mapped": "timezone"
         },
         {
           "original": "theme",
-          "mapped": "theme",
-          "argumentMappings": []
+          "mapped": "theme"
         }
       ]
     },
@@ -239,18 +223,15 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "title",
-          "mapped": "title",
-          "argumentMappings": []
+          "mapped": "title"
         },
         {
           "original": "authorId",
-          "mapped": "author_id",
-          "argumentMappings": []
+          "mapped": "author_id"
         }
       ]
     },
@@ -259,18 +240,15 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "content",
-          "mapped": "content",
-          "argumentMappings": []
+          "mapped": "content"
         },
         {
           "original": "authorId",
-          "mapped": "author_id",
-          "argumentMappings": []
+          "mapped": "author_id"
         }
       ]
     },
@@ -279,43 +257,35 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "name",
-          "mapped": "name",
-          "argumentMappings": []
+          "mapped": "name"
         },
         {
           "original": "email",
-          "mapped": "email",
-          "argumentMappings": []
+          "mapped": "email"
         },
         {
           "original": "username",
-          "mapped": "username",
-          "argumentMappings": []
+          "mapped": "username"
         },
         {
           "original": "phone",
-          "mapped": "phone",
-          "argumentMappings": []
+          "mapped": "phone"
         },
         {
           "original": "website",
-          "mapped": "website",
-          "argumentMappings": []
+          "mapped": "website"
         },
         {
           "original": "company",
-          "mapped": "company",
-          "argumentMappings": []
+          "mapped": "company"
         },
         {
           "original": "address",
-          "mapped": "address",
-          "argumentMappings": []
+          "mapped": "address"
         }
       ]
     },
@@ -324,18 +294,15 @@
       "fieldMappings": [
         {
           "original": "name",
-          "mapped": "name",
-          "argumentMappings": []
+          "mapped": "name"
         },
         {
           "original": "catchPhrase",
-          "mapped": "catch_phrase",
-          "argumentMappings": []
+          "mapped": "catch_phrase"
         },
         {
           "original": "bs",
-          "mapped": "bs",
-          "argumentMappings": []
+          "mapped": "bs"
         }
       ]
     },
@@ -344,33 +311,23 @@
       "fieldMappings": [
         {
           "original": "street",
-          "mapped": "street",
-          "argumentMappings": []
+          "mapped": "street"
         },
         {
           "original": "suite",
-          "mapped": "suite",
-          "argumentMappings": []
+          "mapped": "suite"
         },
         {
           "original": "city",
-          "mapped": "city",
-          "argumentMappings": []
+          "mapped": "city"
         },
         {
           "original": "zipcode",
-          "mapped": "zipcode",
-          "argumentMappings": []
+          "mapped": "zipcode"
         },
         {
           "original": "geo",
-          "mapped": "geo",
-          "argumentMappings": []
-        },
-        {
-          "original": "test",
-          "mapped": "test",
-          "argumentMappings": []
+          "mapped": "geo"
         }
       ]
     },
@@ -379,13 +336,11 @@
       "fieldMappings": [
         {
           "original": "lat",
-          "mapped": "lat",
-          "argumentMappings": []
+          "mapped": "lat"
         },
         {
           "original": "lng",
-          "mapped": "lng",
-          "argumentMappings": []
+          "mapped": "lng"
         }
       ]
     },
@@ -394,53 +349,43 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "name",
-          "mapped": "name",
-          "argumentMappings": []
+          "mapped": "name"
         },
         {
           "original": "email",
-          "mapped": "email",
-          "argumentMappings": []
+          "mapped": "email"
         },
         {
           "original": "role",
-          "mapped": "role",
-          "argumentMappings": []
+          "mapped": "role"
         },
         {
           "original": "permissions",
-          "mapped": "permissions",
-          "argumentMappings": []
+          "mapped": "permissions"
         },
         {
           "original": "tags",
-          "mapped": "tags",
-          "argumentMappings": []
+          "mapped": "tags"
         },
         {
           "original": "skillCategories",
-          "mapped": "skill_categories",
-          "argumentMappings": []
+          "mapped": "skill_categories"
         },
         {
           "original": "bio",
-          "mapped": "bio",
-          "argumentMappings": []
+          "mapped": "bio"
         },
         {
           "original": "age",
-          "mapped": "age",
-          "argumentMappings": []
+          "mapped": "age"
         },
         {
           "original": "profile",
-          "mapped": "profile",
-          "argumentMappings": []
+          "mapped": "profile"
         }
       ]
     },
@@ -449,18 +394,15 @@
       "fieldMappings": [
         {
           "original": "displayName",
-          "mapped": "display_name",
-          "argumentMappings": []
+          "mapped": "display_name"
         },
         {
           "original": "timezone",
-          "mapped": "timezone",
-          "argumentMappings": []
+          "mapped": "timezone"
         },
         {
           "original": "theme",
-          "mapped": "theme",
-          "argumentMappings": []
+          "mapped": "theme"
         }
       ]
     },
@@ -469,13 +411,11 @@
       "fieldMappings": [
         {
           "original": "title",
-          "mapped": "title",
-          "argumentMappings": []
+          "mapped": "title"
         },
         {
           "original": "authorId",
-          "mapped": "author_id",
-          "argumentMappings": []
+          "mapped": "author_id"
         }
       ]
     }

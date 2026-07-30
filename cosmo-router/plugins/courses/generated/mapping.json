@@ -47,8 +47,7 @@
       "fieldMappings": [
         {
           "original": "courses",
-          "mapped": "courses",
-          "argumentMappings": []
+          "mapped": "courses"
         },
         {
           "original": "course",
@@ -96,18 +95,15 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "instructorCourses",
-          "mapped": "instructor_courses",
-          "argumentMappings": []
+          "mapped": "instructor_courses"
         },
         {
           "original": "enrollments",
-          "mapped": "enrollments",
-          "argumentMappings": []
+          "mapped": "enrollments"
         }
       ]
     },
@@ -116,38 +112,31 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "title",
-          "mapped": "title",
-          "argumentMappings": []
+          "mapped": "title"
         },
         {
           "original": "description",
-          "mapped": "description",
-          "argumentMappings": []
+          "mapped": "description"
         },
         {
           "original": "instructor",
-          "mapped": "instructor",
-          "argumentMappings": []
+          "mapped": "instructor"
         },
         {
           "original": "durationHours",
-          "mapped": "duration_hours",
-          "argumentMappings": []
+          "mapped": "duration_hours"
         },
         {
           "original": "published",
-          "mapped": "published",
-          "argumentMappings": []
+          "mapped": "published"
         },
         {
           "original": "enrollments",
-          "mapped": "enrollments",
-          "argumentMappings": []
+          "mapped": "enrollments"
         }
       ]
     },
@@ -156,28 +145,23 @@
       "fieldMappings": [
         {
           "original": "id",
-          "mapped": "id",
-          "argumentMappings": []
+          "mapped": "id"
         },
         {
           "original": "user",
-          "mapped": "user",
-          "argumentMappings": []
+          "mapped": "user"
         },
         {
           "original": "course",
-          "mapped": "course",
-          "argumentMappings": []
+          "mapped": "course"
         },
         {
           "original": "progress",
-          "mapped": "progress",
-          "argumentMappings": []
+          "mapped": "progress"
         },
         {
           "original": "enrolledAt",
-          "mapped": "enrolled_at",
-          "argumentMappings": []
+          "mapped": "enrolled_at"
         }
       ]
     },
@@ -186,32 +170,25 @@
       "fieldMappings": [
         {
           "original": "title",
-          "mapped": "title",
-          "argumentMappings": []
+          "mapped": "title"
         },
         {
           "original": "description",
-          "mapped": "description",
-          "argumentMappings": []
+          "mapped": "description"
         },
         {
           "original": "instructorId",
-          "mapped": "instructor_id",
-          "argumentMappings": []
+          "mapped": "instructor_id"
         },
         {
           "original": "durationHours",
-          "mapped": "duration_hours",
-          "argumentMappings": []
+          "mapped": "duration_hours"
         },
         {
           "original": "published",
-          "mapped": "published",
-          "argumentMappings": []
+          "mapped": "published"
         }
       ]
     }
-  ],
-  "enumMappings": [],
-  "resolveMappings": []
+  ]
 }

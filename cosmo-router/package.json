@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "compose": "wgc router compose -i graph.yaml -o config.json",
-    
+
     "build:users": "wgc router plugin build plugins/users --debug",
     "build:courses": "wgc router plugin build plugins/courses --debug",
     "build": "npm run build:users && npm run build:courses && npm run compose",
@@ -23,6 +23,6 @@
     "start": "./release/router"
   },
   "dependencies": {
-    "wgc": "^0.90.4"
+    "wgc": "^0.129.5"
   }
 }
